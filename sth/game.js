@@ -23,6 +23,12 @@ var drawClouds = function (ctx, clouds, count) {
     }
 }
 
+var gameLoop = function (ctx, width, height, maxClouds, clouds) {
+    clear(ctx, width, height);
+    updateClouds(clouds, maxClouds, width, height, 5);
+    drawClouds(ctx, clouds, maxClouds);
+}
+
 var makeCloud = function (width, height) {
     return {
         x: Math.random() * width,
@@ -30,6 +36,20 @@ var makeCloud = function (width, height) {
         radius: Math.random() * 100,
         opacity: Math.random() / 2
     };
+}
+
+var updateClouds = function (clouds, count, width, height, y) {
+    for (var i = 0; i < count; i++) {
+        var cloud = clouds[i];
+        if (cloud.y - cloud.radius > height) {
+            // cloud is off canvas
+            clouds[i] = makeCloud(width, height);
+        }
+        else {
+            // cloud is on canvas
+            cloud.y += y;
+        }
+    }
 }
 
 var gameProperties = {
@@ -48,5 +68,7 @@ for (var i = 0; i < gameProperties.maxClouds; i++) {
 }
 
 var gameContext = game.getContext('2d');
-clear(gameContext, gameProperties.width, gameProperties.height);
-drawClouds(gameContext, clouds, gameProperties.maxClouds);
+
+setInterval(function () {
+gameLoop(gameContext, gameProperties.width, gameProperties.height, gameProperties.maxClouds, clouds);
+}, 1000 / 30);
