@@ -1,3 +1,19 @@
+var gameLoop = function (game, player) {
+    game.clearContext();
+    game.updateClouds(5);
+    game.drawClouds();
+
+    player.accelerate(game.height);
+    player.draw(game);
+}
+var makeCloud = function (width, height) {
+    return {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 100,
+        opacity: Math.random() / 2
+    };
+}
 var makeGame = function () {
     return {
         width: "320",
@@ -45,24 +61,90 @@ var makeGame = function () {
                     cloud.y += y;
                 }
             }
-
         }
     };
 }
 
-var gameLoop = function (game) {
-    game.clearContext();
-    game.updateClouds(5);
-    game.drawClouds();
-}
-
-var makeCloud = function (width, height) {
+var makePlayer = function () {
+    var img = new Image();
+    img.src = "angel.png";
     return {
-        x: Math.random() * width,
-        y: Math.random() * height,
-        radius: Math.random() * 100,
-        opacity: Math.random() / 2
-    };
+        frame: 0,
+        image: img,
+        interval: 0,
+        width: 65,
+        height: 95,
+        x: 0,
+        y: 0,
+        yvelocity: 0,
+        accelerate: function (height) {
+            this.gravity(1);
+
+            var groundlevel = height - this.height;
+            if (this.y < groundlevel) {
+                // falling to the ground if we are not there yet
+                this.fall(groundlevel);
+            } else {
+                // jump off the ground instead
+                this.jump();                
+            }
+        },
+        gravity: function (rate) {
+            // gravity pulls down/has no further effect at terminal 
+            // velocity
+            if (this.yvelocity <= 17) {
+                this.yvelocity = this.yvelocity + rate;
+            }
+        },
+        fall: function (groundlevel) {
+            var ytarget = Math.min(groundlevel, this.y + this.yvelocity);
+            this.moveTo(this.x, ytarget);
+        },
+        jump: function () {
+            // jumping pushes up
+            this.yvelocity = -17;
+            this.y = this.y - 1;
+        },
+        moveTo: function (x, y) {
+            this.x = x;
+            this.y = y;
+        },
+        moveLeft: function(){
+            var leftEdge = this.x;
+            if(leftEdge > 0){
+                this.moveTo(this.x-5,this.y);
+            }
+        },
+        moveRight: function(width){
+            var rightEdge = this.x+this.width;
+            if(rightEdge < width){
+                this.moveTo(this.x+5, this.y);
+            }
+        },
+        draw: function (game) {
+            try {
+                game.context.drawImage(
+                    this.image,
+                    0,
+                    this.height * this.frame,
+                    this.width,
+                    this.height,
+                    this.x,
+                    this.y,
+                    this.width,
+                    this.height);
+            } catch (e) {
+                // if drawing failed, the game loop will retry on the
+                // next tick.
+            }
+
+            this.interval++;
+            if (this.interval % 4 === 0) {
+                this.frame = this.frame ^ 1;
+                this.interval = 0;
+            }
+        }
+    }
 }
 
 var main = function () {
@@ -79,8 +161,18 @@ var main = function () {
 
     game.context = canvasElement.getContext('2d');
 
+    var player = makePlayer();
+    player.moveTo(~ ~((game.width - player.width) / 2), ~ ~((game.height - player.height) / 2));
+    document.onmousemove = function (e) {
+        if (player.x + canvasElement.offsetLeft > e.pageX) {
+            player.moveLeft();
+        } else if (player.x + canvasElement.offsetLeft < e.pageX) {
+            player.moveRight(game.width);
+        }
+    }
+
     setInterval(function () {
-        gameLoop(game);
+        gameLoop(game, player);
     }, 1000 / 30);
 };
 
