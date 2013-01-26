@@ -1,32 +1,59 @@
-var clear = function (ctx, width, height) {
-    // draw rectangle same size as canvas
-    ctx.beginPath();
-    ctx.rect(0, 0, width, height);
-    ctx.closePath();
+var makeGame = function () {
+    return {
+        width: "320",
+        height: "500",
+        maxClouds: "10",
+        clouds: [],
+        clearContext: function () {
+            // draw rectangle same size as canvas
+            this.context.beginPath();
+            this.context.rect(0, 0, this.width, this.height);
+            this.context.closePath();
 
-    // fill with blue
-    ctx.fillStyle = '#d0e7f9';
-    ctx.fill();
+            // fill with blue
+            this.context.fillStyle = '#d0e7f9';
+            this.context.fill();
+        },
+        drawClouds: function () {
+            for (var i = 0; i < this.maxClouds; i++) {
+                var cloud = this.clouds[i];
+
+                // draw a circle
+                this.context.beginPath();
+                this.context.arc(cloud.x,
+                    cloud.y,
+                    cloud.radius,
+                    0,
+                    Math.PI * 2,
+                    true);
+                this.context.closePath();
+
+                // fill it with semi-transparent white
+                this.context.fillStyle = 'rgba(255,255,255,' + cloud.opacity + ')';
+                this.context.fill();
+            }
+        },
+        updateClouds: function (y) {
+            for (var i = 0; i < this.maxClouds; i++) {
+                var cloud = this.clouds[i];
+                if (cloud.y - cloud.radius > this.height) {
+                    // cloud is off canvas
+                    this.clouds[i] = makeCloud(this.width, this.height);
+                }
+                else {
+                    // cloud is on canvas
+                    cloud.y += y;
+                }
+            }
+
+        }
+    };
 }
 
-var drawClouds = function (ctx, clouds, count) {
-    for (var i = 0; i < count; i++) {
-        var cloud = clouds[i];
-        // draw a circle
-        ctx.beginPath();
-        ctx.arc(cloud.x, cloud.y, cloud.radius, 0, Math.PI * 2, true);
-        ctx.closePath();
-
-        // fill it with semi-transparent white
-        ctx.fillStyle = 'rgba(255,255,255,' + cloud.opacity + ')';
-        ctx.fill();
-    }
-}
-
-var gameLoop = function (ctx, width, height, maxClouds, clouds) {
-    clear(ctx, width, height);
-    updateClouds(clouds, maxClouds, width, height, 5);
-    drawClouds(ctx, clouds, maxClouds);
+var gameLoop = function (game) {
+    game.clearContext();
+    game.updateClouds(5);
+    game.drawClouds();
 }
 
 var makeCloud = function (width, height) {
@@ -38,37 +65,23 @@ var makeCloud = function (width, height) {
     };
 }
 
-var updateClouds = function (clouds, count, width, height, y) {
-    for (var i = 0; i < count; i++) {
-        var cloud = clouds[i];
-        if (cloud.y - cloud.radius > height) {
-            // cloud is off canvas
-            clouds[i] = makeCloud(width, height);
-        }
-        else {
-            // cloud is on canvas
-            cloud.y += y;
-        }
-    }
-}
+var main = function () {
+    var game = makeGame();
 
-var gameProperties = {
-    width: "320",
-    height: "500",
-    maxClouds: "10"
+    var canvasElement = document.getElementById('game');
+    canvasElement.width = game.width;
+    canvasElement.height = game.height;
+
+    for (var i = 0; i < game.maxClouds; i++) {
+        var cloud = makeCloud(game.width, game.height);
+        game.clouds.push(cloud);
+    }
+
+    game.context = canvasElement.getContext('2d');
+
+    setInterval(function () {
+        gameLoop(game);
+    }, 1000 / 30);
 };
 
-var game = document.getElementById('game');
-game.width = gameProperties.width;
-game.height = gameProperties.height;
-
-var clouds = [];
-for (var i = 0; i < gameProperties.maxClouds; i++) {
-    clouds.push(makeCloud(gameProperties.width, gameProperties.height));
-}
-
-var gameContext = game.getContext('2d');
-
-setInterval(function () {
-gameLoop(gameContext, gameProperties.width, gameProperties.height, gameProperties.maxClouds, clouds);
-}, 1000 / 30);
+main();
