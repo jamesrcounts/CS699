@@ -1,3 +1,17 @@
+var gameLoop = function (game, player) {
+    game.clearContext();
+    game.updateClouds(5);
+    game.drawClouds();
+    player.draw(game);
+}
+var makeCloud = function (width, height) {
+    return {
+        x: Math.random() * width,
+        y: Math.random() * height,
+        radius: Math.random() * 100,
+        opacity: Math.random() / 2
+    };
+}
 var makeGame = function () {
     return {
         width: "320",
@@ -45,24 +59,41 @@ var makeGame = function () {
                     cloud.y += y;
                 }
             }
-
         }
     };
 }
 
-var gameLoop = function (game) {
-    game.clearContext();
-    game.updateClouds(5);
-    game.drawClouds();
-}
-
-var makeCloud = function (width, height) {
+var makePlayer = function () {
+    var img = new Image();
+    img.src = "angel.png";
     return {
-        x: Math.random() * width,
-        y: Math.random() * height,
-        radius: Math.random() * 100,
-        opacity: Math.random() / 2
-    };
+        image: img,
+        width: 65,
+        height: 95,
+        x: 0,
+        y: 0,
+        moveTo: function (x, y) {
+            this.x = x;
+            this.y = y;
+        },
+        draw: function (game) {
+            try {
+                game.context.drawImage(
+                    this.image,
+                    0,
+                    0,
+                    this.width,
+                    this.height,
+                    this.x,
+                    this.y,
+                    this.width,
+                    this.height);
+            } catch (e) {
+                // if drawing failed, the game loop will retry on the
+                // next tick.
+            }
+        }
+    }
 }
 
 var main = function () {
@@ -79,8 +110,11 @@ var main = function () {
 
     game.context = canvasElement.getContext('2d');
 
+    var player = makePlayer();
+    player.moveTo(~~((game.width - player.width) / 2), ~~((game.height - player.height) / 2));
+
     setInterval(function () {
-        gameLoop(game);
+        gameLoop(game, player);
     }, 1000 / 30);
 };
 
