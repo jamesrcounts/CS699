@@ -67,7 +67,9 @@ var makePlayer = function () {
     var img = new Image();
     img.src = "angel.png";
     return {
+        frame: 0,
         image: img,
+        interval: 0,
         width: 65,
         height: 95,
         x: 0,
@@ -81,7 +83,7 @@ var makePlayer = function () {
                 game.context.drawImage(
                     this.image,
                     0,
-                    0,
+                    this.height * this.frame,
                     this.width,
                     this.height,
                     this.x,
@@ -91,6 +93,12 @@ var makePlayer = function () {
             } catch (e) {
                 // if drawing failed, the game loop will retry on the
                 // next tick.
+            }
+
+            this.interval++;
+            if (this.interval % 4 === 0) {
+                this.frame = this.frame ^ 1;
+                this.interval = 0;
             }
         }
     }
