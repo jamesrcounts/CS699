@@ -2,12 +2,8 @@ var gameLoop = function (game, player) {
     game.clearContext();
     game.updateClouds(5);
     game.drawClouds();
-    if (player.jumping) {
-        player.checkjump();
-    }
-    if (player.falling) {
-        player.checkfall(game.height);
-    }
+ 
+    player.accelerate(game.height);
     player.draw(game);
 }
 var makeCloud = function (width, height) {
@@ -84,6 +80,15 @@ var makePlayer = function () {
         jumpspeed:0,
         falling: false,
         fallspeed: 0,
+        accelerate:function(height){
+            // gravity has no effect once her feet touch the "ground"
+            if(this.y < (height - this.height)){
+                this.gravity( 1);
+            }
+        },
+        gravity: function (rate) {
+                this.moveTo(this.x, this.y + rate);            
+        },
         checkfall: function (height) {
             if (this.y < height - this.height) {
                 // didn't hit the bottom
@@ -167,7 +172,6 @@ var main = function () {
 
     var player = makePlayer();
     player.moveTo(~~((game.width - player.width) / 2), ~~((game.height - player.height) / 2));
-    player.jump();
 
     setInterval(function () {
         gameLoop(game, player);
