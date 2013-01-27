@@ -2,6 +2,12 @@ var gameLoop = function (game, player) {
     game.clearContext();
     game.updateClouds(5);
     game.drawClouds();
+    if (player.jumping) {
+        player.checkjump();
+    }
+    if (player.falling) {
+        player.checkfall(game.height);
+    }
     player.draw(game);
 }
 var makeCloud = function (width, height) {
@@ -74,6 +80,47 @@ var makePlayer = function () {
         height: 95,
         x: 0,
         y: 0,
+        jumping: false,
+        jumpspeed:0,
+        falling: false,
+        fallspeed: 0,
+        checkfall: function (height) {
+            if (this.y < height - this.height) {
+                // didn't hit the bottom
+                this.moveTo(this.x, this.y + this.fallspeed);
+                //accelerate down
+                this.fallspeed++;
+            } else {
+                this.fallStop();
+                // hit the bottom
+            }
+
+        },
+        checkjump: function () {
+            this.moveTo(this.x, this.y - this.jumpspeed);
+            // acceleration due to gravity is 1 jumpspeed per frame or
+            // 50 pixels per second.
+            this.jumpspeed--;
+            // falling now?
+            if (this.jumpspeed === 0) {
+                this.jumping = false;
+                this.falling = true;
+                this.fallspeed = 1;
+            }
+        },
+        jump: function () {
+            // Can only jump when there is no current vertical movement.
+            if (!this.jumping && !this.falling) {
+                this.fallspeed = 0;
+                this.jumping = true;
+                this.jumpspeed = 17;
+            }
+        },
+        fallStop: function () {
+            this.isFalling = false;
+            this.fallspeed = 0;
+            this.jump();
+        },
         moveTo: function (x, y) {
             this.x = x;
             this.y = y;
@@ -120,6 +167,7 @@ var main = function () {
 
     var player = makePlayer();
     player.moveTo(~~((game.width - player.width) / 2), ~~((game.height - player.height) / 2));
+    player.jump();
 
     setInterval(function () {
         gameLoop(game, player);
