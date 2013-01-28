@@ -109,6 +109,18 @@ var makePlayer = function () {
             this.x = x;
             this.y = y;
         },
+        moveLeft: function(){
+            var leftEdge = this.x;
+            if(leftEdge > 0){
+                this.moveTo(this.x-5,this.y);
+            }
+        },
+        moveRight: function(width){
+            var rightEdge = this.x+this.width;
+            if(rightEdge < width){
+                this.moveTo(this.x+5, this.y);
+            }
+        },
         draw: function (game) {
             try {
                 game.context.drawImage(
@@ -151,6 +163,13 @@ var main = function () {
 
     var player = makePlayer();
     player.moveTo(~ ~((game.width - player.width) / 2), ~ ~((game.height - player.height) / 2));
+    document.onmousemove = function (e) {
+        if (player.x + canvasElement.offsetLeft > e.pageX) {
+            player.moveLeft();
+        } else if (player.x + canvasElement.offsetLeft < e.pageX) {
+            player.moveRight(game.width);
+        }
+    }
 
     setInterval(function () {
         gameLoop(game, player);
