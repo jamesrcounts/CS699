@@ -2,7 +2,7 @@ var gameLoop = function (game, player) {
     game.clearContext();
     game.updateClouds(5);
     game.drawClouds();
- 
+
     player.accelerate(game.height);
     player.draw(game);
 }
@@ -76,55 +76,30 @@ var makePlayer = function () {
         height: 95,
         x: 0,
         y: 0,
-        jumping: false,
-        jumpspeed:0,
-        falling: false,
-        fallspeed: 0,
-        accelerate:function(height){
-            // gravity has no effect once her feet touch the "ground"
-            if(this.y < (height - this.height)){
-                this.gravity( 1);
-            }
-        },
-        gravity: function (rate) {
-                this.moveTo(this.x, this.y + rate);            
-        },
-        checkfall: function (height) {
-            if (this.y < height - this.height) {
-                // didn't hit the bottom
-                this.moveTo(this.x, this.y + this.fallspeed);
-                //accelerate down
-                this.fallspeed++;
+        yvelocity: 0,
+        accelerate: function (height) {
+            this.gravity(1);
+
+            if (this.y < (height - this.height)) {
+                // falling has no effect once her feet touch the "ground"
+                this.moveTo(this.x, this.y + this.yvelocity);
             } else {
-                this.fallStop();
-                // hit the bottom
+                // jump off the ground instead
+                this.jump();
+                this.y = this.y - 1;
             }
 
         },
-        checkjump: function () {
-            this.moveTo(this.x, this.y - this.jumpspeed);
-            // acceleration due to gravity is 1 jumpspeed per frame or
-            // 50 pixels per second.
-            this.jumpspeed--;
-            // falling now?
-            if (this.jumpspeed === 0) {
-                this.jumping = false;
-                this.falling = true;
-                this.fallspeed = 1;
+        gravity: function (rate) {
+            // gravity pulls down has no further effect at terminal 
+            // velocity
+            if (this.yvelocity <= 17) {
+                this.yvelocity = this.yvelocity + rate;
             }
         },
         jump: function () {
-            // Can only jump when there is no current vertical movement.
-            if (!this.jumping && !this.falling) {
-                this.fallspeed = 0;
-                this.jumping = true;
-                this.jumpspeed = 17;
-            }
-        },
-        fallStop: function () {
-            this.isFalling = false;
-            this.fallspeed = 0;
-            this.jump();
+
+            this.yvelocity = -17;
         },
         moveTo: function (x, y) {
             this.x = x;
@@ -171,7 +146,7 @@ var main = function () {
     game.context = canvasElement.getContext('2d');
 
     var player = makePlayer();
-    player.moveTo(~~((game.width - player.width) / 2), ~~((game.height - player.height) / 2));
+    player.moveTo(~ ~((game.width - player.width) / 2), ~ ~((game.height - player.height) / 2));
 
     setInterval(function () {
         gameLoop(game, player);
