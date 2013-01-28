@@ -82,15 +82,12 @@ var makePlayer = function () {
 
             var groundlevel = height - this.height;
             if (this.y < groundlevel) {
-                // falling has no effect once her feet touch the "ground"
-                var ytarget = Math.min(groundlevel, this.y + this.yvelocity);
-                this.moveTo(this.x, ytarget);
+                // falling to the ground if we are not there yet
+                this.fall(groundlevel);
             } else {
                 // jump off the ground instead
-                this.jump();
-                this.y = this.y - 1;
+                this.jump();                
             }
-
         },
         gravity: function (rate) {
             // gravity pulls down/has no further effect at terminal 
@@ -99,9 +96,14 @@ var makePlayer = function () {
                 this.yvelocity = this.yvelocity + rate;
             }
         },
+        fall: function (groundlevel) {
+            var ytarget = Math.min(groundlevel, this.y + this.yvelocity);
+            this.moveTo(this.x, ytarget);
+        },
         jump: function () {
             // jumping pushes up
             this.yvelocity = -17;
+            this.y = this.y - 1;
         },
         moveTo: function (x, y) {
             this.x = x;
