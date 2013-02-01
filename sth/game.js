@@ -2,25 +2,70 @@ var gameLoop = function (game, player) {
     game.clearContext();
     game.updateClouds(5);
     game.drawClouds();
-
+    game.drawPlatforms();
     player.accelerate(game.height);
     player.draw(game);
-}
+};
 var makeCloud = function (width, height) {
     return {
-        x: Math.random() * width,
-        y: Math.random() * height,
-        radius: Math.random() * 100,
-        opacity: Math.random() / 2
+        x:Math.random() * width,
+        y:Math.random() * height,
+        radius:Math.random() * 100,
+        opacity:Math.random() / 2
     };
-}
+};
+
+var makePlatform = function (x, y, width, height, type) {
+    var halfHeight = height / 2;
+    var halfWidth = width / 2;
+    var platform = {
+        x:~~x,
+        y:y,
+        type:type,
+        draw:function (ctx) {
+            var gradient = ctx.createRadialGradient(
+                this.x + halfWidth,
+                this.y + halfHeight,
+                5,
+                this.x + halfWidth,
+                this.y + halfHeight,
+                45);
+            gradient.addColorStop(0, this.primaryColor);
+            gradient.addColorStop(1, this.secondaryColor);
+
+            ctx.fillStyle = 'rgba(255,255,255,1)';
+            ctx.fillStyle = gradient;
+            ctx.fillRect(this.x, this.y, width, height);
+        }
+    };
+    if (type === 1) {
+        platform.primaryColor = "#AADD00";
+        platform.secondaryColor = "#698B22";
+        platform.behavior = function (player) {
+            player.stop();
+            player.jump(50);
+        };
+
+    } else {
+        platform.primaryColor = "#FF8C00";
+        platform.secondaryColor = "#EEEE00";
+        platform.behavior = function (player) {
+            player.stop();
+        };
+    }
+    return platform;
+};
 var makeGame = function () {
     return {
-        width: "320",
-        height: "500",
-        maxClouds: "10",
-        clouds: [],
-        clearContext: function () {
+        width:320,
+        height:500,
+        maxClouds:10,
+        maxPlatforms:7,
+        platformWidth:70,
+        platformHeight:20,
+        platforms:[],
+        clouds:[],
+        clearContext:function () {
             // draw rectangle same size as canvas
             this.context.beginPath();
             this.context.rect(0, 0, this.width, this.height);
@@ -30,7 +75,7 @@ var makeGame = function () {
             this.context.fillStyle = '#d0e7f9';
             this.context.fill();
         },
-        drawClouds: function () {
+        drawClouds:function () {
             for (var i = 0; i < this.maxClouds; i++) {
                 var cloud = this.clouds[i];
 
@@ -49,7 +94,13 @@ var makeGame = function () {
                 this.context.fill();
             }
         },
-        updateClouds: function (y) {
+        drawPlatforms:function () {
+            var ctx = this.context;
+            this.platforms.forEach(function (platform) {
+                platform.draw(ctx);
+            });
+        },
+        updateClouds:function (y) {
             for (var i = 0; i < this.maxClouds; i++) {
                 var cloud = this.clouds[i];
                 if (cloud.y - cloud.radius > this.height) {
@@ -63,65 +114,71 @@ var makeGame = function () {
             }
         }
     };
-}
+};
 
 var makePlayer = function () {
     var img = new Image();
     img.src = "angel.png";
     return {
-        frame: 0,
-        image: img,
-        interval: 0,
-        width: 65,
-        height: 95,
-        x: 0,
-        y: 0,
-        yvelocity: 0,
-        accelerate: function (height) {
+        frame:0,
+        image:img,
+        interval:0,
+        width:65,
+        height:95,
+        x:0,
+        y:0,
+        verticalVelocity:0,
+        accelerate:function (height) {
             this.gravity(1);
 
-            var groundlevel = height - this.height;
-            if (this.y < groundlevel) {
+            var groundLevel = height - this.height;
+            if (this.y < groundLevel) {
                 // falling to the ground if we are not there yet
-                this.fall(groundlevel);
+                this.fall(groundLevel);
             } else {
                 // jump off the ground instead
-                this.jump();                
+                this.jump();
             }
         },
-        gravity: function (rate) {
-            // gravity pulls down/has no further effect at terminal 
+        gravity:function (rate) {
+            // gravity pulls down/has no further effect at terminal
             // velocity
-            if (this.yvelocity <= 17) {
-                this.yvelocity = this.yvelocity + rate;
+            if (this.verticalVelocity <= 17) {
+                this.verticalVelocity = this.verticalVelocity + rate;
             }
         },
-        fall: function (groundlevel) {
-            var ytarget = Math.min(groundlevel, this.y + this.yvelocity);
-            this.moveTo(this.x, ytarget);
+        fall:function (groundLevel) {
+            var targetLevel = Math.min(groundLevel, this.y + this.verticalVelocity);
+            this.moveTo(this.x, targetLevel);
         },
-        jump: function () {
+        jump:function (force) {
+            if (typeof force === "undefined") {
+                force = 17;
+            }
             // jumping pushes up
-            this.yvelocity = -17;
+            this.verticalVelocity = force * -1;
             this.y = this.y - 1;
         },
-        moveTo: function (x, y) {
+        stop:function () {
+            this.verticalVelocity = 0;
+        },
+        moveTo:function (x, y) {
             this.x = x;
             this.y = y;
         },
-        moveLeft: function(){
+        moveLeft:function () {
             var leftEdge = this.x;
-            if(leftEdge > 0){
-                this.moveTo(this.x-5,this.y);
+            if (leftEdge > 0) {
+                this.moveTo(this.x - 5, this.y);
             }
         },
-        moveRight: function(width){
-            var rightEdge = this.x+this.width;
-            if(rightEdge < width){
-                this.moveTo(this.x+5, this.y);
+        moveRight:function (width) {
+            var rightEdge = this.x + this.width;
+            if (rightEdge < width) {
+                this.moveTo(this.x + 5, this.y);
             }
         },
-        draw: function (game) {
+        draw:function (game) {
             try {
                 game.context.drawImage(
                     this.image,
@@ -145,7 +202,7 @@ var makePlayer = function () {
             }
         }
     }
-}
+};
 
 var main = function () {
     var game = makeGame();
@@ -153,23 +210,43 @@ var main = function () {
     var canvasElement = document.getElementById('game');
     canvasElement.width = game.width;
     canvasElement.height = game.height;
+    game.context = canvasElement.getContext('2d');
 
-    for (var i = 0; i < game.maxClouds; i++) {
+    for (var j = 0; j < game.maxClouds; j++) {
         var cloud = makeCloud(game.width, game.height);
         game.clouds.push(cloud);
     }
 
-    game.context = canvasElement.getContext('2d');
+    var platformPosition = 0;
+    for (var i = 0; i < game.maxPlatforms; i++) {
+        var type = 0;
+        if (~~(Math.random() * 5) === 0) {
+            type = 1;
+        }
+        var platform = makePlatform(
+            Math.random() * (game.width - game.platformWidth),
+            platformPosition,
+            game.platformWidth,
+            game.platformHeight,
+            type
+        );
+        game.platforms.push(platform);
+        if (platformPosition < (game.height - game.platformHeight)) {
+            platformPosition += ~~(game.height / game.maxPlatforms);
+        }
+
+    }
+
 
     var player = makePlayer();
-    player.moveTo(~ ~((game.width - player.width) / 2), ~ ~((game.height - player.height) / 2));
+    player.moveTo(~~((game.width - player.width) / 2), ~~((game.height - player.height) / 2));
     document.onmousemove = function (e) {
         if (player.x + canvasElement.offsetLeft > e.pageX) {
             player.moveLeft();
         } else if (player.x + canvasElement.offsetLeft < e.pageX) {
             player.moveRight(game.width);
         }
-    }
+    };
 
     setInterval(function () {
         gameLoop(game, player);
