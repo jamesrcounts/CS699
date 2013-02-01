@@ -4,6 +4,7 @@ var gameLoop = function (game, player) {
     game.drawClouds();
     game.drawPlatforms();
     player.accelerate(game.height);
+    game.updatePlatforms(player);
     player.draw(game);
 };
 var makeCloud = function (width, height) {
@@ -51,6 +52,7 @@ var makePlatform = function (x, y, width, height, type) {
         platform.secondaryColor = "#EEEE00";
         platform.behavior = function (player) {
             player.stop();
+            player.jump();
         };
     }
     return platform;
@@ -111,6 +113,25 @@ var makeGame = function () {
                     // cloud is on canvas
                     cloud.y += y;
                 }
+            }
+        },
+        updatePlatforms:function (player) {
+
+            var width = this.platformWidth;
+            var height = this.platformHeight;
+            if (player.verticalVelocity > 0) {
+                // falling
+                this.platforms.forEach(function (platform) {
+                    if (
+                        (player.x < platform.x + width) &&
+                            (player.x + player.width > platform.x) &&
+                            (player.y + player.height > platform.y) &&
+                            (player.y + player.height < platform.y + height)
+                        ) {
+                        // on the platform
+                        platform.behavior(player);
+                    }
+                });
             }
         }
     };
