@@ -1,6 +1,6 @@
 var gameLoop = function (game, player) {
     game.clearContext();
-    game.updateClouds(5);
+    // game.updateClouds(5);
     game.drawClouds();
     game.drawPlatforms();
     player.accelerate(game.height);
