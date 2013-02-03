@@ -157,7 +157,7 @@ var makeGame = function () {
                             }
                             platform = makePlatform(
                                 Math.random() * (that.width - that.platformWidth),
-                                0,
+                                platform.y - that.height,
                                 that.platformWidth,
                                 that.platformHeight,
                                 type
