@@ -3,9 +3,12 @@ var gameLoop = function (game, player) {
     game.updateClouds(player);
     game.drawClouds();
     game.drawPlatforms();
-    player.accelerate(game.height);
+    player.accelerate(game);
     game.updatePlatforms(player);
     player.draw(game);
+    if (player.y <= (game.height * 0.4) && player.verticalVelocity < -10){
+        game.points++;
+    }
 };
 var makeCloud = function (width, height) {
     return {
@@ -19,10 +22,14 @@ var makeCloud = function (width, height) {
 var makePlatform = function (x, y, width, height, type) {
     var halfHeight = height / 2;
     var halfWidth = width / 2;
+    var xVelocity= ~~(Math.random() * 2);
+    xVelocity = xVelocity * ~~(Math.random() * 2) ? -1 : 1;
+
     var platform = {
         x:~~x,
         y:y,
         type:type,
+        horizontalVelocity : xVelocity,
         draw:function (ctx) {
             var gradient = ctx.createRadialGradient(
                 this.x + halfWidth,
@@ -66,6 +73,7 @@ var makeGame = function () {
         platformWidth:70,
         platformHeight:20,
         platforms:[],
+        points:0,
         clouds:[],
         clearContext:function () {
             // draw rectangle same size as canvas
@@ -126,8 +134,22 @@ var makeGame = function () {
             var width = this.platformWidth;
             var height = this.platformHeight;
             var halfHeight = this.height * 0.4;
-            var gameHeight = this.height;
+
             var that = this;
+
+            // platform x velocity
+            this.platforms.forEach(function (platform, index) {
+                if (platform.horizontalVelocity !== 0) {
+                    if (platform.x < 0 || platform.x > (that.width - that.platformWidth))
+                    {
+                        platform.horizontalVelocity = platform.horizontalVelocity * -1;
+                    }
+                    var direction = platform.horizontalVelocity < 0 ? - 1 :
+                        platform.horizontalVelocity > 0 ? 1 :
+                            0;
+                    platform.x += direction * (index / 2) * ~~(that.points / 100);
+                }
+            });
             if (player.verticalVelocity >= 0) {
                 // falling
                 this.platforms.forEach(function (platform) {
@@ -184,13 +206,13 @@ var makePlayer = function () {
         x:0,
         y:0,
         verticalVelocity:0,
-        accelerate:function (height) {
+        accelerate:function (gmae) {
             this.gravity(1);
 
-            var groundLevel = height - this.height;
+            var groundLevel = game.height - this.height;
             if (this.y < groundLevel) {
                 // falling to the ground if we are not there yet
-                this.fall(groundLevel, height);
+                this.fall(groundLevel, game.height);
             } else {
                 // jump off the ground instead
                 this.jump();
@@ -205,9 +227,8 @@ var makePlayer = function () {
         },
         fall:function (groundLevel, gameHeight) {
             var halfHeight = gameHeight * 0.4;
-
             var targetLevel = this.y + this.verticalVelocity;
-            targetLevel = Math.max(halfHeight, targetLevel);  // for the background, if her position is at halfheight and her velocity is negative, background must move.
+            targetLevel = Math.max(halfHeight, targetLevel);  // for the background, if her position is at half height and her velocity is negative, background must move.
             targetLevel = Math.min(groundLevel, targetLevel);
             this.moveTo(this.x, targetLevel);
         },
