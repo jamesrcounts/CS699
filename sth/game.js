@@ -1,12 +1,18 @@
-var gameLoop = function (game, player) {
+var gameLoop = function (game, player, interval) {
     game.clearContext();
     game.updateClouds(player);
     game.drawClouds();
     game.drawPlatforms();
-    player.accelerate(game.height);
+    player.accelerate(game);
     game.updatePlatforms(player);
+    game.updatePoints(player);
     player.draw(game);
+    if(!player.alive){
+        clearInterval(interval);
+        game.gameOver();
+    }
 };
+
 var makeCloud = function (width, height) {
     return {
         x:Math.random() * width,
@@ -19,10 +25,14 @@ var makeCloud = function (width, height) {
 var makePlatform = function (x, y, width, height, type) {
     var halfHeight = height / 2;
     var halfWidth = width / 2;
+    var xVelocity= ~~(Math.random() * 2);
+    xVelocity = xVelocity * ~~(Math.random() * 2) ? -1 : 1;
+
     var platform = {
         x:~~x,
         y:y,
         type:type,
+        horizontalVelocity : xVelocity,
         draw:function (ctx) {
             var gradient = ctx.createRadialGradient(
                 this.x + halfWidth,
@@ -66,7 +76,17 @@ var makeGame = function () {
         platformWidth:70,
         platformHeight:20,
         platforms:[],
+        points:0,
         clouds:[],
+        gameOver: function(){
+            this.clearContext();
+            this.context.fillStyle="Black";
+            this.context.font = "10pt Arial";
+            var horizontalAlignment = this.width/2 - 60;
+            var verticalAlignment = this.height/2 - 50;
+            this.context.fillText("GAME OVER", horizontalAlignment, verticalAlignment);
+            this.context.fillText("YOUR RESULT: " + this.points, horizontalAlignment, verticalAlignment + 20);
+        },
         clearContext:function () {
             // draw rectangle same size as canvas
             this.context.beginPath();
@@ -126,8 +146,22 @@ var makeGame = function () {
             var width = this.platformWidth;
             var height = this.platformHeight;
             var halfHeight = this.height * 0.4;
-            var gameHeight = this.height;
+
             var that = this;
+
+            // platform x velocity
+            this.platforms.forEach(function (platform, index) {
+                if (platform.horizontalVelocity !== 0) {
+                    if (platform.x < 0 || platform.x > (that.width - that.platformWidth))
+                    {
+                        platform.horizontalVelocity = platform.horizontalVelocity * -1;
+                    }
+                    var direction = platform.horizontalVelocity < 0 ? - 1 :
+                        platform.horizontalVelocity > 0 ? 1 :
+                            0;
+                    platform.x += direction * (index / 2) * ~~(that.points / 100);
+                }
+            });
             if (player.verticalVelocity >= 0) {
                 // falling
                 this.platforms.forEach(function (platform) {
@@ -168,6 +202,14 @@ var makeGame = function () {
                 }
 
             }
+        },
+        updatePoints:function(player){
+            if (player.y <= (this.height * 0.4) && player.verticalVelocity < -10){
+                this.points++;
+            }
+
+            this.context.fillStyle="Black";
+            this.context.fillText("POINTS: " + this.points, 10, this.height - 10);
         }
     };
 };
@@ -184,16 +226,28 @@ var makePlayer = function () {
         x:0,
         y:0,
         verticalVelocity:0,
-        accelerate:function (height) {
+        alive:true,
+        accelerate:function (gmae) {
             this.gravity(1);
 
-            var groundLevel = height - this.height;
+            var groundLevel = game.height - this.height;
             if (this.y < groundLevel) {
                 // falling to the ground if we are not there yet
-                this.fall(groundLevel, height);
+                this.fall(groundLevel, game.height);
             } else {
-                // jump off the ground instead
-                this.jump();
+                // at the beginning of the game she can jump
+                // off the ground.
+                if(game.points == 0)
+                {
+                    this.jump();
+                }
+                else
+                {
+                    // else ground is fatal
+                    this.alive = false;
+                }
+
+
             }
         },
         gravity:function (rate) {
@@ -205,9 +259,8 @@ var makePlayer = function () {
         },
         fall:function (groundLevel, gameHeight) {
             var halfHeight = gameHeight * 0.4;
-
             var targetLevel = this.y + this.verticalVelocity;
-            targetLevel = Math.max(halfHeight, targetLevel);  // for the background, if her position is at halfheight and her velocity is negative, background must move.
+            targetLevel = Math.max(halfHeight, targetLevel);  // for the background, if her position is at half height and her velocity is negative, background must move.
             targetLevel = Math.min(groundLevel, targetLevel);
             this.moveTo(this.x, targetLevel);
         },
@@ -308,8 +361,8 @@ var main = function () {
         }
     };
 
-    setInterval(function () {
-        gameLoop(game, player);
+    var interval = setInterval(function () {
+        gameLoop(game, player, interval);
     }, 1000 / 30);
 };
 
