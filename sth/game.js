@@ -1,15 +1,18 @@
-var gameLoop = function (game, player) {
+var gameLoop = function (game, player, interval) {
     game.clearContext();
     game.updateClouds(player);
     game.drawClouds();
     game.drawPlatforms();
     player.accelerate(game);
     game.updatePlatforms(player);
+    game.updatePoints(player);
     player.draw(game);
-    if (player.y <= (game.height * 0.4) && player.verticalVelocity < -10){
-        game.points++;
+    if(!player.alive){
+        clearInterval(interval);
+        game.gameOver();
     }
 };
+
 var makeCloud = function (width, height) {
     return {
         x:Math.random() * width,
@@ -75,6 +78,15 @@ var makeGame = function () {
         platforms:[],
         points:0,
         clouds:[],
+        gameOver: function(){
+            this.clearContext();
+            this.context.fillStyle="Black";
+            this.context.font = "10pt Arial";
+            var horizontalAlignment = this.width/2 - 60;
+            var verticalAlignment = this.height/2 - 50;
+            this.context.fillText("GAME OVER", horizontalAlignment, verticalAlignment);
+            this.context.fillText("YOUR RESULT: " + this.points, horizontalAlignment, verticalAlignment + 20);
+        },
         clearContext:function () {
             // draw rectangle same size as canvas
             this.context.beginPath();
@@ -190,6 +202,14 @@ var makeGame = function () {
                 }
 
             }
+        },
+        updatePoints:function(player){
+            if (player.y <= (this.height * 0.4) && player.verticalVelocity < -10){
+                this.points++;
+            }
+
+            this.context.fillStyle="Black";
+            this.context.fillText("POINTS: " + this.points, 10, this.height - 10);
         }
     };
 };
@@ -206,6 +226,7 @@ var makePlayer = function () {
         x:0,
         y:0,
         verticalVelocity:0,
+        alive:true,
         accelerate:function (gmae) {
             this.gravity(1);
 
@@ -214,8 +235,19 @@ var makePlayer = function () {
                 // falling to the ground if we are not there yet
                 this.fall(groundLevel, game.height);
             } else {
-                // jump off the ground instead
-                this.jump();
+                // at the beginning of the game she can jump
+                // off the ground.
+                if(game.points == 0)
+                {
+                    this.jump();
+                }
+                else
+                {
+                    // else ground is fatal
+                    this.alive = false;
+                }
+
+
             }
         },
         gravity:function (rate) {
@@ -329,8 +361,8 @@ var main = function () {
         }
     };
 
-    setInterval(function () {
-        gameLoop(game, player);
+    var interval = setInterval(function () {
+        gameLoop(game, player, interval);
     }, 1000 / 30);
 };
 
