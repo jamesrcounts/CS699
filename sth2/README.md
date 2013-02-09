@@ -1,0 +1,1 @@
+#Stairway To Heaven##Revision 2The goal of this iteration is to incorporate ideas from [Tangle]() and [CodeBook]() into a live game designer which allows students to explore intentional design.  The focus is on what the designer _intends_ to happen, not the coding mechanics of _how_ it happens.
