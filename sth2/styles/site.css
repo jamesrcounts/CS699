@@ -1,0 +1,13 @@
+body{
+    background-color: #778899;
+    font-family: sans-serif;
+}
+
+#designer{
+    position: absolute;
+    top: 10%;
+    left: 1%;
+    width: 500px;
+    height: 1000px;
+    background-color: #f5f5f5;
+}
