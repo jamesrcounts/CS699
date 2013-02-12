@@ -227,7 +227,7 @@ var makePlayer = function () {
         y:0,
         verticalVelocity:0,
         alive:true,
-        accelerate:function (gmae) {
+        accelerate:function (game) {
             this.gravity(1);
 
             var groundLevel = game.height - this.height;
@@ -319,7 +319,7 @@ var makePlayer = function () {
 
 var main = function () {
     var game = makeGame();
-
+    game.width = game.width * 3;
     var canvasElement = document.getElementById('game');
     canvasElement.width = game.width;
     canvasElement.height = game.height;
@@ -352,7 +352,7 @@ var main = function () {
 
 
     var player = makePlayer();
-    player.moveTo(~~((game.width - player.width) / 2), ~~((game.height - player.height) / 2));
+    player.moveTo(~~((game.width - player.width) / 2), game.height - player.height);
     document.onmousemove = function (e) {
         if (player.x + canvasElement.offsetLeft > e.pageX) {
             player.moveLeft();
