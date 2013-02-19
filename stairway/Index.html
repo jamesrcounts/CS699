@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title></title>
+    <script type="text/javascript" src="src/board.js"></script>
+</head>
+<body>
+<canvas id="game"></canvas>
+<script type="text/javascript">
+    function main(){
+        var board = new Board();
+        board.setSize("huge");
+        var canvasElement = document.getElementById('game');
+        canvasElement.width = board.width;
+        canvasElement.height = board.height;
+        var context = canvasElement.getContext('2d');
+
+        board.draw(context);
+    }
+
+    main();
+</script>
+</body>
+</html>
