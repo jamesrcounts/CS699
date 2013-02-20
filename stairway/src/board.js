@@ -6,7 +6,9 @@ function Board() {
     return {
         width:320,
         height:500,
-        draw:function (context) {
+        draw:function (canvas, context) {
+            canvas.width = this.width;
+            canvas.height= this.height;
             context.beginPath();
             context.rect(0, 0, this.width, this.height);
             context.closePath();

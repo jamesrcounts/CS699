@@ -7,15 +7,13 @@
 <body>
 <canvas id="game"></canvas>
 <script type="text/javascript">
-    function main(){
-        var board = new Board();
-        board.setSize("huge");
+    function main() {
         var canvasElement = document.getElementById('game');
-        canvasElement.width = board.width;
-        canvasElement.height = board.height;
         var context = canvasElement.getContext('2d');
 
-        board.draw(context);
+        var board = new Board();
+        board.setSize("small");
+        board.draw(canvasElement, context);
     }
 
     main();

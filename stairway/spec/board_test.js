@@ -5,14 +5,17 @@
  */
 describe("Draw the board", function () {
     it("should draw itself on the context", function () {
-        var mock = new ContextMock();
+        var context = new ContextMock();
+        var canvas = {};
         var board = new Board();
-        board.draw(mock);
-        expect(mock.beginPathCalls).toEqual(1);
-        expect(mock.rectArgs).toEqual([0, 0, board.width, board.height]);
-        expect(mock.closePathCalls).toEqual(1);
-        expect(mock.fillStyle).toEqual(board.getColor());
-        expect(mock.fillCalls).toEqual(1);
+        board.draw(canvas, context);
+        expect(context.beginPathCalls).toEqual(1);
+        expect(context.rectArgs).toEqual([0, 0, board.width, board.height]);
+        expect(context.closePathCalls).toEqual(1);
+        expect(context.fillStyle).toEqual(board.getColor());
+        expect(context.fillCalls).toEqual(1);
+        expect(canvas.width).toEqual(board.width);
+        expect(canvas.height).toEqual(board.height);
     })
 });
 
@@ -24,7 +27,6 @@ describe("Draw the board", function () {
 describe("See the board", function () {
     it("should be blue", function () {
         var board = new Board();
-
         expect(board.getColor()).toEqual('#d0e7f9');
     })
 });
@@ -32,7 +34,7 @@ describe("See the board", function () {
 /*
  As a designer
  I want to resize the board
- So that I can experiment with gameplay
+ So that I can experiment with game play
  */
 describe("Leave the board the default size", function () {
     it("should be 320x500", function () {
