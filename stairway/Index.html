@@ -15,9 +15,10 @@
 
 </head>
 <body>
-<canvas id="game"></canvas>
-<p>The board is size <span data-var="boardSize" data-min="1" data-max="3" class="TKAdjustableNumber">.</span></p>
-<script type="text/javascript">
+    <canvas id="game" data-var="canvasSize"></canvas>   
+    <p>The board is size <span data-var="boardSize" data-min="1" data-max="3" class="TKAdjustableNumber"></span>.</p>
+    <p>The board is <span data-var="sizeOfBoard" data-min="0" data-max="2" class="TKSwitch"><span>small</span><span>medium</span><span>huge</span></span>.</p>
+    <script type="text/javascript">
     function main() {
         var canvasElement = document.getElementById('game');
         var context = canvasElement.getContext('2d');
@@ -27,23 +28,23 @@
 
         var tangle = new Tangle(document, {
             initialize:function () {
-                board.setSize("small");
                 this.boardSize = 1;
             },
             update:function () {
-                if (this.boardSize === 1) {
-                    board.setSize("small");
-                } else if (this.boardSize === 2) {
-                    board.setSize("medium");
-                } else if (this.boardSize === 3) {
-                    board.setSize("huge");
-                }
+                var sizes = [ "small", "medium", "huge" ];
+                var sx = this.boardSize - 1;
+                var size = sizes[sx];
+
+                this.canvasSize = this.boardSize;
+                
+                this.sizeOfBoard = sx;
+                board.setSize(size);
                 board.draw(canvasElement, context);
             }
         })
     }
 
     main();
-</script>
+    </script>
 </body>
 </html>
