@@ -17,8 +17,24 @@
 <body>
     <canvas id="game" data-var="canvasSize"></canvas>   
     <p>The board is size <span data-var="boardSize" data-min="1" data-max="3" class="TKAdjustableNumber"></span>.</p>
+    <p>The board is <span data-var="sb" data-values="small medium huge" class="CarouselText"></span>.</p>
     <p>The board is <span data-var="sizeOfBoard" data-min="0" data-max="2" class="TKSwitch"><span>small</span><span>medium</span><span>huge</span></span>.</p>
     <script type="text/javascript">
+    Tangle.classes.CarouselText = {
+        initialize: function (element, options, tangle, variable) {
+            var carousel = this;
+            carousel.values = (options.values !== undefined) ? 
+                                options.values.split(" ") : ["locked"];
+
+            element.onclick = function () {
+                var value = tangle.getValue(variable);
+                var key = carousel.values.indexOf(value);
+                var next = (key + 1) % carousel.values.length;
+                tangle.setValue(variable, carousel.values[next]);
+            };
+        }
+    };
+
     function main() {
         var canvasElement = document.getElementById('game');
         var context = canvasElement.getContext('2d');
@@ -29,6 +45,7 @@
         var tangle = new Tangle(document, {
             initialize:function () {
                 this.boardSize = 1;
+                this.sb = "small";
             },
             update:function () {
                 var sizes = [ "small", "medium", "huge" ];
