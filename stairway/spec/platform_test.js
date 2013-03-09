@@ -1,4 +1,4 @@
-describe('Platform', function () {
+describe('A Platform', function () {
     var platform = new Platform(new PlatformBounce(), new PlatformBounce(50));
     it('has an orange gradient color by default', function () {
         expect(platform.getColors()).toEqual(['#FF8C00', '#EEEE00']);

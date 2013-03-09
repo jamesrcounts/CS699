@@ -6,18 +6,19 @@ describe("Board drawing", function () {
         spyOn(context, 'beginPath');
         spyOn(context, 'rect');
         spyOn(context, 'closePath');
-        spyOn(context,'fill');
+        spyOn(context, 'fill');
         board.draw(canvas, context);
     });
     it('sets the canvas size', function () {
-        expect(canvas.width).toEqual(board.width);
-        expect(canvas.height).toEqual(board.height);
+        var size = board.getSize();
+        expect(canvas.width).toEqual(size.width);
+        expect(canvas.height).toEqual(size.height);
     });
     it('begins drawing a path', function () {
         expect(context.beginPath).toHaveBeenCalled();
     });
     it('draws a rectangle', function () {
-        expect(context.rect).toHaveBeenCalledWith(0, 0, board.width, board.height);
+        expect(context.rect).toHaveBeenCalledWith(0, 0, board.getSize().width, board.getSize().height);
     });
     it('finishes drawing the path', function () {
         expect(context.closePath).toHaveBeenCalled();
@@ -36,22 +37,18 @@ describe("The board", function () {
         expect(board.getColor()).toEqual('#d0e7f9');
     });
     it('is 320x500 by default', function () {
-        expect(board.width).toEqual(320);
-        expect(board.height).toEqual(500);
+        expect(board.getSize()).toEqual({width: 320, height: 500});
     });
-    it('is 640x500 when medium', function(){
+    it('is 640x500 when medium', function () {
         board.setSize('medium');
-        expect(board.width).toEqual(640);
-        expect(board.height).toEqual(500);
-    })    ;
-    it('is 960x500 when huge', function(){
+        expect(board.getSize()).toEqual({width: 640, height: 500});
+    });
+    it('is 960x500 when huge', function () {
         board.setSize('huge');
-        expect(board.width).toEqual(960);
-        expect(board.height).toEqual(500);
-    })                                    ;
-    it('is 320x500 when small', function(){
+        expect(board.getSize()).toEqual({width: 960, height: 500});
+    });
+    it('is 320x500 when small', function () {
         board.setSize('small');
-        expect(board.width).toEqual(320);
-        expect(board.height).toEqual(500);
+        expect(board.getSize()).toEqual({width: 320, height: 500});
     })
 });
