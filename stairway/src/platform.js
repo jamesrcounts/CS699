@@ -1,12 +1,3 @@
-const leftDirection = /left/i;
-const rightDirection = /right/i;
-const nowhereDirection = /nowhere/i;
-
-const smallWidth = 70;
-const mediumWidth = 140;
-const hugeWidth = 210;
-
-
 function pickANumber(number) {
     return ~~(Math.random() * number);
 }
@@ -79,6 +70,13 @@ function Platform(defaultBounce, superBounce) {
 
     const superPlatform = /super/i;
     const normalPlatform = /normal/i;
+
+    const leftDirection = /left/i;
+    const rightDirection = /right/i;
+    const nowhereDirection = /nowhere/i;
+
+    const smallWidth = 70;
+
 
     this.bounce = defaultBounce;
     this.direction = 0;
@@ -163,9 +161,10 @@ function Platform(defaultBounce, superBounce) {
                     that.width = smallWidth;
                 }
                 else if (sizeIsMedium.test(platformSize)) {
-                    that.width = mediumWidth;
-                } else if (sizeIsHuge.test(platformSize)) {
-                    that.width = hugeWidth;
+                    that.width = smallWidth * 2;
+                }
+                else if (sizeIsHuge.test(platformSize)) {
+                    that.width = smallWidth * 3;
                 }
             },
             setType: function (platformType) {
