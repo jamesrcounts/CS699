@@ -8,6 +8,8 @@ function ContextMock() {
         beginPath:function () {
             this.beginPathCalls++;
         },
+        createRadialGradient:function () {
+        },
         fillCalls:0,
         fill:function () {
             this.fillCalls++;

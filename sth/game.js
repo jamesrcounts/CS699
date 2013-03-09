@@ -227,7 +227,7 @@ var makePlayer = function () {
         y:0,
         verticalVelocity:0,
         alive:true,
-        accelerate:function (gmae) {
+        accelerate:function (game) {
             this.gravity(1);
 
             var groundLevel = game.height - this.height;
