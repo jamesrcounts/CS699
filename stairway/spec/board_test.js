@@ -50,5 +50,15 @@ describe("The board", function () {
     it('is 320x500 when small', function () {
         board.setSize('small');
         expect(board.getSize()).toEqual({width: 320, height: 500});
+    });
+    it('can position platforms within its boundary', function () {
+        var platform = new Platform();
+        var original = platform.getLocation();
+        board.distributePlatforms([platform]);
+        var position = platform.getLocation();
+        var size = platform.getSize();
+        expect(position).toNotBe(original);
+        expect(position.x).toBeLessThan(board.getSize().width - size.width);
+        expect(position.y).toBeLessThan(board.getSize().height - size.height);
     })
 });

@@ -4,7 +4,7 @@ describe('A Platform', function () {
         expect(platform.getColors()).toEqual(['#FF8C00', '#EEEE00']);
     });
     it('is 70x20 by default', function () {
-        expect(platform.getSize()).toEqual({w: 70, h: 20});
+        expect(platform.getSize()).toEqual({width: 70, height: 20});
     });
     it('has a bounce factor of 17 by default', function () {
         expect(platform.getBounce()).toEqual(17);
@@ -27,15 +27,15 @@ describe('A Platform', function () {
     });
     it('is 140x20 when medium', function () {
         platform.setSize('medium');
-        expect(platform.getSize()).toEqual({w: 140, h: 20});
+        expect(platform.getSize()).toEqual({width: 140, height: 20});
     });
     it('is 210x20 when huge', function () {
         platform.setSize('huge');
-        expect(platform.getSize()).toEqual({w: 210, h: 20});
+        expect(platform.getSize()).toEqual({width: 210, height: 20});
     });
     it('is 70x20 when small', function () {
         platform.setSize('small');
-        expect(platform.getSize()).toEqual({w: 70, h: 20});
+        expect(platform.getSize()).toEqual({width: 70, height: 20});
     });
     it('has no movement by default', function () {
         expect(platform.getVelocity()).toEqual({speed: 0, direction: 0});
@@ -59,6 +59,7 @@ describe('A Platform', function () {
         platform.moveTo(10, 10);
         expect(platform.getLocation()).toEqual({x: 10, y: 10});
     });
+
 });
 
 describe('Drawing Platforms', function () {
@@ -115,8 +116,8 @@ describe('Drawing Platforms', function () {
         expect(ctx.fillRect).toHaveBeenCalledWith(
             platformLocation.x,
             platformLocation.y,
-            platformSize.w,
-            platformSize.h);
+            platformSize.width,
+            platformSize.height);
     });
 });
 
@@ -140,5 +141,27 @@ describe('Platform Bounce', function () {
     it('has a maximum bounce factor of 2048', function () {
         bounce.setBounceFactor(4092);
         expect(bounce.getBounceFactor()).toEqual(2048);
+    });
+});
+
+describe('Platform generator', function () {
+    var state = 0;
+    var generator = new PlatformFactory(
+        new PlatformBounce(),
+        new PlatformBounce(50),
+        function () {
+            var rem = state % 2;
+            state++;
+            return rem;
+        });
+    var platforms = generator.make(7);
+    it('generates as many platforms as you like', function () {
+        expect(platforms.length).toEqual(7);
+    });
+    it('makes some of the platforms into super platforms', function () {
+        var superPlatforms = platforms.filter(function (element) {
+            return element.getBounce() === 50;
+        });
+        expect(superPlatforms.length).toEqual(4);
     });
 });

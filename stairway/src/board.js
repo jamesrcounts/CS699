@@ -1,11 +1,11 @@
-const sizeIsSmall = /small/i;
-const sizeIsMedium = /medium/i;
-const sizeIsHuge = /huge/i;
-const skyBlue = '#d0e7f9';
-const defaultBoardWidth = 320;
-
 function Board() {
     var that = this;
+    const sizeIsSmall = /small/i;
+    const sizeIsMedium = /medium/i;
+    const sizeIsHuge = /huge/i;
+    const skyBlue = '#d0e7f9';
+    const defaultBoardWidth = 320;
+
     this.width = defaultBoardWidth;
     this.height = 500;
 
@@ -37,6 +37,20 @@ function Board() {
                 } else if (sizeIsHuge.test(size)) {
                     that.width = defaultBoardWidth * 3;
                 }
-            }}
+            },
+            distributePlatforms: function (platforms) {
+                var y = 0;
+                var stepDown = this.getStep(platforms.length);
+                platforms.forEach(function (platform) {
+                    var size = platform.getSize();
+                    var x = pickANumber(that.width - size.width);
+                    platform.moveTo(x, y);
+                    y += stepDown;
+                });
+            },
+            getStep: function (number) {
+                return ~~(that.height / number);
+            }
+        }
     })();
 }

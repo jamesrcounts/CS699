@@ -6,17 +6,41 @@ const smallWidth = 70;
 const mediumWidth = 140;
 const hugeWidth = 210;
 
-const superPlatform = /super/i;
-const normalPlatform = /normal/i;
 
-const smallSize = /small/i;
-const mediumSize = /medium/i;
-const hugeSize = /huge/i;
+function pickANumber(number) {
+    return ~~(Math.random() * number);
+}
 
-const lightGreen = "#AADD00";
-const darkGreen = "#698B22";
-const darkOrange = "#FF8C00";
-const lightOrange = "#EEEE00";
+function PlatformFactory(normalBounce, superBounce, typeChooser) {
+    var that = this;
+    this.bounce = normalBounce;
+    this.super = superBounce;
+
+    this.chooser = function () {
+        return pickANumber(5);
+    };
+
+    if (typeChooser) {
+        this.chooser = typeChooser;
+    }
+
+    return(function () {
+        return{
+            make: function (number) {
+                var platforms = [];
+                for (var i = 0; i < number; i++) {
+                    var platform = new Platform(that.bounce, that.super);
+                    if (that.chooser() === 0) {
+                        platform.setType('super');
+                    }
+                    platforms.push(platform);
+                }
+                return platforms;
+            }
+        };
+    })();
+}
+
 
 function PlatformBounce(bounceFactor) {
     var that = this;
@@ -43,6 +67,18 @@ function PlatformBounce(bounceFactor) {
 
 function Platform(defaultBounce, superBounce) {
     var that = this;
+
+    const lightGreen = "#AADD00";
+    const darkGreen = "#698B22";
+    const darkOrange = "#FF8C00";
+    const lightOrange = "#EEEE00";
+
+    const sizeIsSmall = /small/i;
+    const sizeIsMedium = /medium/i;
+    const sizeIsHuge = /huge/i;
+
+    const superPlatform = /super/i;
+    const normalPlatform = /normal/i;
 
     this.bounce = defaultBounce;
     this.direction = 0;
@@ -96,8 +132,8 @@ function Platform(defaultBounce, superBounce) {
             },
             getSize: function () {
                 return{
-                    w: that.width,
-                    h: that.height
+                    width: that.width,
+                    height: that.height
                 };
             },
             getVelocity: function () {
@@ -123,12 +159,12 @@ function Platform(defaultBounce, superBounce) {
                 that.y = Y;
             },
             setSize: function (platformSize) {
-                if (smallSize.test(platformSize)) {
+                if (sizeIsSmall.test(platformSize)) {
                     that.width = smallWidth;
                 }
-                else if (mediumSize.test(platformSize)) {
+                else if (sizeIsMedium.test(platformSize)) {
                     that.width = mediumWidth;
-                } else if (hugeSize.test(platformSize)) {
+                } else if (sizeIsHuge.test(platformSize)) {
                     that.width = hugeWidth;
                 }
             },
@@ -142,7 +178,6 @@ function Platform(defaultBounce, superBounce) {
                     that.secondaryColor = lightOrange;
                     that.bounce = defaultBounce;
                 }
-            }
-        }
+            }                                         }
     })();
 }
