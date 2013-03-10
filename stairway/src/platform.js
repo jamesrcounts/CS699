@@ -180,3 +180,18 @@ function Platform(defaultBounce, superBounce) {
             }                                         }
     })();
 }
+
+function ConvertPlatformToShape(platform) {
+    var shape = new createjs.Shape();
+    var center = platform.getCenter();
+    var size = platform.getSize();
+    shape.graphics.beginRadialGradientFill(
+        platform.getColors(), [0, 1],
+        center.x, center.y, 5,
+        center.x, center.y, 45);
+    var location = platform.getLocation();
+    shape.graphics.drawRect(
+        location.x, location.y,
+        size.width, size.height);
+    return shape;
+}

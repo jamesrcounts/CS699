@@ -42,8 +42,8 @@
 </p>
 <script type="text/javascript">
     (function () {
-        var global = this;
-        this.canvasElement = document.getElementById('game');
+
+        var canvasElement = document.getElementById('game');
         this.context = canvasElement.getContext('2d');
 
         var board = new Board();
@@ -51,37 +51,24 @@
                 new PlatformBounce(),
                 new PlatformBounce(50));
         var platforms = platformMaker.make(7);
+        var stage = new createjs.Stage(canvasElement);
+
         new Tangle(document, {
             initialize: function () {
                 this.boardSize = "small";
             },
             update: function () {
                 board.setSize(this.boardSize);
-                var stage = new createjs.Stage(global.canvasElement);
-                board.draw(global.canvasElement, global.context);
-                var background = new createjs.Shape();
-                background.graphics.beginFill(board.getColor())
-                        .drawRect(0,
-                                0,
-                                board.getSize().width,
-                                board.getSize().height);
-                stage.addChild(background);
                 board.distributePlatforms(platforms);
+
+                ResizeCanvas(stage.canvas, board);
+                stage.clear();
+                stage.addChild(ConvertBoardToShape(board));
+
                 platforms.forEach(function (platform) {
-                    var shape = new createjs.Shape();
-                    shape.graphics.beginFill(platform.getColors()[0])
-                            .drawRect(platform.getLocation().x,
-                                    platform.getLocation().y,
-                                    platform.getSize().width,
-                                    platform.getSize().height);
-                    stage.addChild(shape);
-
-
+                    stage.addChild(ConvertPlatformToShape(platform));
                 });
                 stage.update();
-//                platforms.forEach(function(platform){
-//                    platform.draw(global.context);
-//                });
             }
         })
     })();

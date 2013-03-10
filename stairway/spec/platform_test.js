@@ -165,3 +165,26 @@ describe('Platform generator', function () {
         expect(superPlatforms.length).toEqual(4);
     });
 });
+
+describe('Platform converter', function () {
+    var platform = new Platform(new PlatformBounce(), new PlatformBounce(50));
+    it('converts platforms into EaselJS shapes', function () {
+        var shape = new createjs.Shape();
+        var center = platform.getCenter();
+        var size = platform.getSize();
+        shape.graphics.beginRadialGradientFill(
+            platform.getColors(), [0, 1],
+            center.x, center.y, 5,
+            center.x, center.y, 45);
+
+        var location = platform.getLocation();
+        shape.graphics.drawRect(
+            location.x, location.y,
+            size.width, size.height);
+        delete shape.id;
+
+        var converted = ConvertPlatformToShape(platform);
+        delete converted.id;
+        expect(converted).toEqual(shape);
+    });
+});

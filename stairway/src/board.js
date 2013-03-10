@@ -11,15 +11,6 @@ function Board() {
 
     return (function () {
         return{
-            draw: function (canvas, context) {
-                canvas.width = that.width;
-                canvas.height = that.height;
-                context.beginPath();
-                context.rect(0, 0, that.width, that.height);
-                context.closePath();
-                context.fillStyle = this.getColor();
-                context.fill();
-            },
             getColor: function () {
                 return skyBlue;
             },
@@ -53,4 +44,28 @@ function Board() {
             }
         }
     })();
+}
+
+function ResizeCanvas(canvas, board) {
+    var that = board.getSize();
+    canvas.width = that.width;
+    canvas.height = that.height;
+}
+
+function ConvertBoardToShape(board) {
+    var size = board.getSize();
+    var rectangle = new createjs.Shape();
+    rectangle.graphics
+        .beginFill(board.getColor())
+        .drawRect(0, 0, size.width, size.height);
+    return rectangle;
+}
+
+function PaintBoard(board, context) {
+    var that = board.getSize();
+    context.beginPath();
+    context.rect(0, 0, that.width, that.height);
+    context.closePath();
+    context.fillStyle = board.getColor();
+    context.fill();
 }
