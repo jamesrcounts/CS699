@@ -8,6 +8,9 @@
     <script type="text/javascript" src="src/board.js"></script>
     <script type="text/javascript" src="src/platform.js"></script>
 
+    <!-- Easel -->
+    <script type="text/javascript" src="lib/EaselJS/easeljs-0.6.0.min.js"></script>
+
     <!-- Tangle -->
     <script type="text/javascript" src="lib/Tangle-0.1.0/Tangle.js">
     </script>
@@ -54,11 +57,31 @@
             },
             update: function () {
                 board.setSize(this.boardSize);
+                var stage = new createjs.Stage(global.canvasElement);
                 board.draw(global.canvasElement, global.context);
+                var background = new createjs.Shape();
+                background.graphics.beginFill(board.getColor())
+                        .drawRect(0,
+                                0,
+                                board.getSize().width,
+                                board.getSize().height);
+                stage.addChild(background);
                 board.distributePlatforms(platforms);
-                platforms.forEach(function(platform){
-                    platform.draw(global.context);
+                platforms.forEach(function (platform) {
+                    var shape = new createjs.Shape();
+                    shape.graphics.beginFill(platform.getColors()[0])
+                            .drawRect(platform.getLocation().x,
+                                    platform.getLocation().y,
+                                    platform.getSize().width,
+                                    platform.getSize().height);
+                    stage.addChild(shape);
+
+
                 });
+                stage.update();
+//                platforms.forEach(function(platform){
+//                    platform.draw(global.context);
+//                });
             }
         })
     })();
