@@ -1,0 +1,15 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Box2d Demo</title>
+</head>
+<body>
+    <script type="text/javascript">
+        // Start with a world
+        gravity = new b2Vec2(0, 10);  // vector is force and direction
+        /* error - b2Vec2 is not defined */
+        doSleep = true;               // allow the browser to suspend the simulation
+        world = new b2World(gravity, doSleep);
+    </script>
+</body>
+</html>

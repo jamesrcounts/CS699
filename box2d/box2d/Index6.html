@@ -1,0 +1,71 @@
+﻿<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Box2d Demo</title>
+    <script type="text/javascript" src="lib/Box2dWeb-2.1a.3/Box2dWeb-2.1.a.3.js"></script>
+</head>
+<body>
+    <!-- Make canvas black to get a better idea where the platform is -->
+    <canvas id="c" style="background: black"></canvas>
+    <script type="text/javascript">
+        var CANVAS_WIDTH = 300;
+        var CANVAS_HEIGHT = 300;
+
+        var canvas = document.getElementById("c");
+        canvas.width = CANVAS_WIDTH;
+        canvas.height = CANVAS_HEIGHT;
+
+        var context2d = canvas.getContext("2d");
+
+        // our world is 10m x 10m because the canvas is 300px by 300px
+        var SCALE = 30;
+
+        // Converters
+        function toScale(dimension) {
+            return dimension / SCALE;
+        }
+
+        function toSpan(dimension) {
+            return toScale(dimension) / 2;
+        }
+
+        var b2Vec2 = Box2D.Common.Math.b2Vec2
+              , b2BodyDef = Box2D.Dynamics.b2BodyDef
+              , b2Body = Box2D.Dynamics.b2Body
+              , b2FixtureDef = Box2D.Dynamics.b2FixtureDef
+               , b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape
+               , b2World = Box2D.Dynamics.b2World
+               , b2DebugDraw = Box2D.Dynamics.b2DebugDraw
+        ;
+
+        // Start with a world
+        var world = new b2World(new b2Vec2(0, 10), true);
+
+        /* Now make it a platform */
+        var fixDef = new b2FixtureDef;
+        fixDef.density = 1.0;
+        fixDef.friction = 0.5
+        fixDef.restitution = 0.2;
+        fixDef.shape = new b2PolygonShape;
+        fixDef.shape.SetAsBox(toSpan(70), toSpan(10));
+
+        var bodyDef = new b2BodyDef;
+        bodyDef.type = b2Body.b2_staticBody;
+        bodyDef.position.x = toScale(CANVAS_WIDTH) / 2;
+        bodyDef.position.y = toScale(CANVAS_HEIGHT)/2;
+
+        // Now add the platform to the world
+        world.CreateBody(bodyDef).CreateFixture(fixDef);
+
+        // Display debug info
+        var debugDraw = new b2DebugDraw();
+        debugDraw.SetSprite(context2d);
+        debugDraw.SetDrawScale(SCALE);
+        debugDraw.SetFillAlpha(0.3);
+        debugDraw.SetLineThickness(1.0);
+        debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+        world.SetDebugDraw(debugDraw);
+        world.DrawDebugData();
+    </script>
+</body>
+</html>
