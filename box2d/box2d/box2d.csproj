@@ -57,6 +57,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Index9.html" />
     <Content Include="Index8.html" />
     <Content Include="Index7.html" />
     <Content Include="Index6.html" />
@@ -65,7 +66,6 @@
     <Content Include="Index3.html" />
     <Content Include="Index2.html" />
     <Content Include="Index.html" />
-    <Content Include="Box2dWeb-2.1.a.3.js" />
     <Content Include="lib\Box2dWeb-2.1a.3\Box2dWeb-2.1.a.3.min.js" />
     <Content Include="lib\Box2dWeb-2.1a.3\demo.html" />
     <Content Include="lib\Box2dWeb-2.1a.3\example.html" />
