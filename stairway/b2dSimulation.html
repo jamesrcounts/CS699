@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <script type="text/javascript" 
+            src="Box2dWeb-2.1.a.3.min.js"></script>
+</head>
+<body>
+    <canvas width="200" 
+            height="200" 
+            style="background: black"></canvas>
+    <script type="text/javascript">
+        var b2Body = Box2D.Dynamics.b2Body;
+        var b2BodyDef = Box2D.Dynamics.b2BodyDef;
+        var b2Vec2 = Box2D.Common.Math.b2Vec2;
+        var b2World = Box2D.Dynamics.b2World;
+
+        var gravity = new b2Vec2(0,9.8);
+        var doSleep = true;
+        var world = new b2World(gravity, doSleep);
+
+        var fixDef = new b2FixtureDef;
+        fixDef.density = 1.0;
+        fixDef.friction = 0.5;
+        fixDef.restitution = 0.2;
+
+    </script>
+</body>
+</html>

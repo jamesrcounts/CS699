@@ -77,7 +77,6 @@ function Platform(defaultBounce, superBounce) {
 
     const smallWidth = 70;
 
-
     this.bounce = defaultBounce;
     this.direction = 0;
     this.height = 20;
@@ -90,26 +89,6 @@ function Platform(defaultBounce, superBounce) {
 
     return (function () {
         return{
-            draw: function (context) {
-                var center = this.getCenter();
-                var startCircle = {
-                    originX: center.x,
-                    originY: center.y,
-                    radius: 5
-                };
-                var endCircle = {
-                    originX: center.x,
-                    originY: center.y,
-                    radius: 45
-                };
-                var gradient = context.createRadialGradient(
-                    startCircle.originX, startCircle.originY, startCircle.radius,
-                    endCircle.originX, endCircle.originY, endCircle.radius);
-                gradient.addColorStop(0, that.primaryColor);
-                gradient.addColorStop(1, that.secondaryColor);
-                context.fillStyle = gradient;
-                context.fillRect(that.x, that.y, that.width, that.height);
-            },
             getBounce: function () {
                 return that.bounce.getBounceFactor();
             },
@@ -179,6 +158,32 @@ function Platform(defaultBounce, superBounce) {
                 }
             }                                         }
     })();
+}
+
+
+function PaintPlatform(platform, context) {
+    var center = platform.getCenter();
+    var startCircle = {
+        originX: center.x,
+        originY: center.y,
+        radius: 5
+    };
+    var endCircle = {
+        originX: center.x,
+        originY: center.y,
+        radius: 45
+    };
+    var gradient = context.createRadialGradient(
+        startCircle.originX, startCircle.originY, startCircle.radius,
+        endCircle.originX, endCircle.originY, endCircle.radius);
+    var colors = platform.getColors();
+    gradient.addColorStop(0, colors[0]);
+    gradient.addColorStop(1, colors[1]);
+    context.fillStyle = gradient;
+    var size = platform.getSize();
+    var location = platform.getLocation();
+    context.fillRect(location.x, location.y, size.width, size.height);
+
 }
 
 function ConvertPlatformToShape(platform) {

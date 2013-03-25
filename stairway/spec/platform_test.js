@@ -62,7 +62,7 @@ describe('A Platform', function () {
 
 });
 
-describe('Drawing Platforms', function () {
+describe('Platform painter', function () {
     function CanvasGradientMock() {
         return{
             addColorStop: function () {
@@ -96,7 +96,7 @@ describe('Drawing Platforms', function () {
 
     it('creates a radial gradient', function () {
         var colors = platform.getColors();
-        platform.draw(ctx);
+        PaintPlatform(platform,ctx);
         expect(ctx.createRadialGradient).toHaveBeenCalledWith(
             startCircle.originX, startCircle.originY, startCircle.radius,
             endCircle.originX, endCircle.originY, endCircle.radius);
@@ -111,8 +111,8 @@ describe('Drawing Platforms', function () {
     it('draws a rectangle', function () {
         var platformSize = platform.getSize();
         var platformLocation = platform.getLocation();
-        platform.draw(ctx);
-
+//        platform.draw(ctx);
+        PaintPlatform(platform,ctx);
         expect(ctx.fillRect).toHaveBeenCalledWith(
             platformLocation.x,
             platformLocation.y,
