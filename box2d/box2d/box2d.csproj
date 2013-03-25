@@ -66,6 +66,7 @@
     <Content Include="Index3.html" />
     <Content Include="Index2.html" />
     <Content Include="Index.html" />
+    <Content Include="JavaScriptFile.js" />
     <Content Include="lib\Box2dWeb-2.1a.3\Box2dWeb-2.1.a.3.min.js" />
     <Content Include="lib\Box2dWeb-2.1a.3\demo.html" />
     <Content Include="lib\Box2dWeb-2.1a.3\example.html" />
