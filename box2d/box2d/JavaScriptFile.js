@@ -54,47 +54,85 @@ world.AddDynamicBox = function (pX, pY, dW, dH) {
     this.AddBox(pX, pY, dW, dH, b2Body.b2_dynamicBody);
 };
 
-var Platform = function (pX, pY, dW, dH) {
-    var shape = new createjs.Shape();
+var Platform = function (cX, cY, dW, dH) {
+    var self = this;
+    self.shape = new createjs.Shape();
+    self.centerX = cX;
+    self.centerY = cY;
+    self.width = dW;
+    self.height = dH;
+
     return {
-        x: pX,
-        y: pY,
-        deflection: 0,
         center: function () {
             return {
-                x: this.x + ~~(this.width / 2),
-                y: this.y + ~~(this.height / 2)
-            };
+                x: self.centerX,
+                y: self.centerY
+            }
         },
-        control: function () {
+        dimensions: function () {
             return {
-                x: that.center().x,
-                y: that.y + that.deflection
-            };
-        },
-        end: function () {
-            return {
-                x: that.x + that.width,
-                y: that.y
-            };
-        },
-        width: dW,
-        height: dH,
-        render: function () {
-            shape.graphics
-                .clear()
-                .setStrokeStyle(this.height)
-                .beginStroke("red")
-                .moveTo(this.x, this.y)
-                .curveTo(platform.control().x, platform.control().y, platform.end().x, platform.end().y);
+                w: self.width,
+                h: self.height
+            }
         }
-    };
+    }
+
+    //var toPixelSpan = function (dim) {
+    //    return dim / 2;
+    //};
+
+    //return {
+    //    deflection: 0,
+    //    start: function () {
+    //        return {
+    //            x: self.centerX - toPixelSpan(self.width),
+    //            y: self.centerY - toPixelSpan(self.height)
+    //        };
+    //    },
+    //    center: function () {
+    //        return {
+    //            x: self.centerX,
+    //            y: self.centerY,
+    //        };
+    //    },
+    //    control: function () {
+    //        return {
+    //            x: self.centerX,
+    //            y: self.centerY + this.deflection
+    //        };
+    //    },
+    //    end: function () {
+    //        return {
+    //            x: self.centerX + toPixelSpan(width),
+    //            y: self.centerY + toPixelSpan(height)
+    //        };
+    //    },
+    //    dimensions: function () {
+    //        return {
+    //            w: self.width,
+    //            h: self.height
+    //        };
+    //    },
+    //    render: function () {
+    //        shape.graphics
+    //            .clear()
+    //            .setStrokeStyle(this.height)
+    //            .beginStroke("red")
+    //            .moveTo(this.x, this.y)
+    //            .curveTo(platform.control().x, platform.control().y, platform.end().x, platform.end().y);
+    //    }
+    //};
 };
 
-p = new Platform((CANVAS_WIDTH / 2)-35, (CANVAS_HEIGHT / 2)-5, 70, 10);
+p = new Platform(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 70, 10);
+
 // Add platform
-// Add platform
-world.AddStaticBox(toScale(p.center().x), toScale(p.center().y), p.width, p.height);
+world.AddStaticBox(
+    toScale(p.center().x),
+    toScale(p.center().y),
+    p.dimensions().w,
+    p.dimensions().h);
+
 // Add angel
 // Add angel
 world.AddDynamicBox(toScale(CANVAS_WIDTH) / 2, toScale(10), 65, 95);
