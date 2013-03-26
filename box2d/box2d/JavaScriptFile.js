@@ -3,6 +3,10 @@
 var CANVAS_WIDTH = 300;
 var CANVAS_HEIGHT = 300;
 
+var easel = document.getElementById("e");
+easel.width = CANVAS_WIDTH;
+easel.height = CANVAS_HEIGHT;
+
 var canvas = document.getElementById("c");
 canvas.width = CANVAS_WIDTH;
 canvas.height = CANVAS_HEIGHT;
@@ -54,19 +58,31 @@ world.AddDynamicBox = function (pX, pY, dW, dH) {
     this.AddBox(pX, pY, dW, dH, b2Body.b2_dynamicBody);
 };
 
-var Platform = function (cX, cY, dW, dH) {
+var Platform = function (cX, cY, dW, dH, st) {
+
     var self = this;
+
     self.shape = new createjs.Shape();
+    st.addChild(self.shape);
     self.centerX = cX;
     self.centerY = cY;
     self.width = dW;
     self.height = dH;
+    self.horizontalSpan = dW / 2;
+    self.verticalSpan = dH / 2;
 
     return {
+        deflection: 0,
         center: function () {
             return {
                 x: self.centerX,
                 y: self.centerY
+            }
+        },
+        control: function () {
+            return {
+                x: this.center().x,
+                y: this.center().y + this.deflection
             }
         },
         dimensions: function () {
@@ -74,6 +90,26 @@ var Platform = function (cX, cY, dW, dH) {
                 w: self.width,
                 h: self.height
             }
+        },
+        end: function(){
+            return {
+                x: self.centerX + self.horizontalSpan,
+                y: self.centerY + self.verticalSpan
+            }
+        },
+        start: function () {
+            return {
+                x: self.centerX - self.horizontalSpan,
+                y: self.centerY - self.verticalSpan,
+            }
+        },
+        render: function () {
+            self.shape.graphics
+                .clear()
+                .setStrokeStyle(this.dimensions().h)
+                .beginStroke("red")
+                .moveTo(this.start().x, this.center().y)
+                .curveTo(this.control().x, this.control().y, this.end().x, this.center().y);
         }
     }
 
@@ -113,18 +149,12 @@ var Platform = function (cX, cY, dW, dH) {
     //            h: self.height
     //        };
     //    },
-    //    render: function () {
-    //        shape.graphics
-    //            .clear()
-    //            .setStrokeStyle(this.height)
-    //            .beginStroke("red")
-    //            .moveTo(this.x, this.y)
-    //            .curveTo(platform.control().x, platform.control().y, platform.end().x, platform.end().y);
-    //    }
+
     //};
 };
 
-p = new Platform(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 70, 10);
+var stage = new createjs.Stage("e");
+p = new Platform(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 70, 10, stage);
 
 // Add platform
 world.AddStaticBox(
@@ -134,9 +164,12 @@ world.AddStaticBox(
     p.dimensions().h);
 
 // Add angel
-// Add angel
-world.AddDynamicBox(toScale(CANVAS_WIDTH) / 2, toScale(10), 65, 95);
-// Display debug info
+world.AddDynamicBox(
+    toScale(CANVAS_WIDTH) / 2,
+    toScale(10),
+    65,
+    95);
+
 // Display debug info
 var debugDraw = new b2DebugDraw();
 debugDraw.SetSprite(context2d);
@@ -146,27 +179,30 @@ debugDraw.SetLineThickness(1.0);
 debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
 world.SetDebugDraw(debugDraw);
 world.DrawDebugData();
-/* Now I want to animate */
-/* Now I want to animate */window.requestAnimFrame = (function () {
-    return window.requestAnimationFrame || window.webkitRequestAnimationFrame || window.mozRequestAnimationFrame || window.oRequestAnimationFrame || window.msRequestAnimationFrame || function (callback /* DOMElement */, element) {
-        window.setTimeout(callback, 1000 / 60);
-    };
+
+window.requestAnimFrame = (function () {
+    return window.requestAnimationFrame
+        || window.webkitRequestAnimationFrame
+        || window.mozRequestAnimationFrame
+        || window.oRequestAnimationFrame
+        || window.msRequestAnimationFrame
+        || function (callback) {
+            window.setTimeout(callback, 1000 / 60);
+        };
 })();
-// Define how to move the simulation forward
+
 // Define how to move the simulation forward
 var frameRate = 1 / 60; // 60Hz
-// 60Hz
 var velocityIterations = 10; // compute forces over the next 10 frames
-// compute forces over the next 10 frames
 var positionIterations = 10; // compute positions over the next 10 frames
-// compute positions over the next 10 frames
-function update() {
-    world.Step(frameRate, velocityIterations, positionIterations);
+
+
+function handleTick() {
     world.DrawDebugData();
-    world.ClearForces(); //???
-    requestAnimFrame(update); // run again
+    p.render();
+    stage.update();
+    world.Step(frameRate, velocityIterations, positionIterations);
+    world.ClearForces();
 }
-;
-// kick off
-// kick off
-requestAnimFrame(update);
+
+createjs.Ticker.addEventListener("tick", handleTick);

@@ -4,65 +4,65 @@
     <script src="http://code.createjs.com/easeljs-0.6.0.min.js"></script>
 </head>
 <body>
-<canvas width=200 height=200 style="background: black" id="demoCanvas"></canvas>
-<script type="text/javascript">
-    var stage = new createjs.Stage("demoCanvas");
+    <canvas width="200" height="200" style="background: black" id="demoCanvas"></canvas>
+    <script type="text/javascript">
+        var stage = new createjs.Stage("demoCanvas");
 
-    function Position(X, Y) {
-        return {x: X, y: Y};
-    }
-
-    function Size(h, w) {
-        return {height: h, width: w};
-    }
-
-    function PlatformModel(color, position, size) {
-        return {
-            fill: color,
-            location: position,
-            dimensions: size,
-            deflection: 0,
-            control: function () {
-                var x = this.location.x + ~~(this.dimensions.width / 2);
-                var y = this.location.y + this.deflection;
-                return new Position(x, y);
-            },
-            end: function () {
-                var x = this.location.x + this.dimensions.width;
-                var y = this.location.y;
-                return new Position(x, y);
-            }
-        };
-    }
-
-    function RenderPlatform(shape, platform) {
-        shape.graphics
-                .clear()
-                .setStrokeStyle(platform.dimensions.height)
-                .beginStroke(platform.fill)
-                .moveTo(platform.location.x, platform.location.y)
-                .curveTo(platform.control().x,
-                        platform.control().y,
-                        platform.end().x,
-                        platform.end().y);
-    }
-
-    var pm = new PlatformModel("red", new Position(100, 100), new Size(10, 70));
-    var ps = new createjs.Shape();
-    stage.addChild(ps);
-
-    var direction = 4;
-
-    createjs.Ticker.addEventListener("tick", handleTick);
-    function handleTick() {
-        RenderPlatform(ps, pm);
-        stage.update();
-        pm.deflection += direction;
-        if (pm.control().y >= (pm.location.y + 20) ||
-                pm.control().y <= (pm.location.y - 20)) {
-            direction *= -1;
+        function Position(X, Y) {
+            return { x: X, y: Y };
         }
-    }
-</script>
+
+        function Size(h, w) {
+            return { height: h, width: w };
+        }
+
+        function PlatformModel(color, position, size) {
+            return {
+                fill: color,
+                location: position,
+                dimensions: size,
+                deflection: 0,
+                control: function () {
+                    var x = this.location.x + ~~(this.dimensions.width / 2);
+                    var y = this.location.y + this.deflection;
+                    return new Position(x, y);
+                },
+                end: function () {
+                    var x = this.location.x + this.dimensions.width;
+                    var y = this.location.y;
+                    return new Position(x, y);
+                }
+            };
+        }
+
+        function RenderPlatform(shape, platform) {
+            shape.graphics
+                    .clear()
+                    .setStrokeStyle(platform.dimensions.height)
+                    .beginStroke(platform.fill)
+                    .moveTo(platform.location.x, platform.location.y)
+                    .curveTo(platform.control().x,
+                            platform.control().y,
+                            platform.end().x,
+                            platform.end().y);
+        }
+
+        var pm = new PlatformModel("red", new Position(100, 100), new Size(10, 70));
+        var ps = new createjs.Shape();
+        stage.addChild(ps);
+
+        var direction = 4;
+
+        createjs.Ticker.addEventListener("tick", handleTick);
+        function handleTick() {
+            RenderPlatform(ps, pm);
+            stage.update();
+            pm.deflection += direction;
+            if (pm.control().y >= (pm.location.y + 20) ||
+                    pm.control().y <= (pm.location.y - 20)) {
+                direction *= -1;
+            }
+        }
+    </script>
 </body>
 </html>
