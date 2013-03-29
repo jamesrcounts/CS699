@@ -46,16 +46,18 @@ world.AddBox = function (pX, pY, dW, dH, bT) {
     var bodyDef = new b2BodyDef(); bodyDef.type = bT;
     bodyDef.position.x = pX;
     bodyDef.position.y = pY;
-    world.CreateBody(bodyDef).CreateFixture(fixDef);
+    var box = this.CreateBody(bodyDef);
+    box.CreateFixture(fixDef);
+    return box;
 };
 
 // Distinguish body type by name
 world.AddStaticBox = function (pX, pY, dW, dH) {
-    this.AddBox(pX, pY, dW, dH, b2Body.b2_staticBody);
+    return this.AddBox(pX, pY, dW, dH, b2Body.b2_staticBody);
 };
 
 world.AddDynamicBox = function (pX, pY, dW, dH) {
-    this.AddBox(pX, pY, dW, dH, b2Body.b2_dynamicBody);
+    return this.AddBox(pX, pY, dW, dH, b2Body.b2_dynamicBody);
 };
 
 var Platform = function (cX, cY, dW, dH, st) {
@@ -91,7 +93,7 @@ var Platform = function (cX, cY, dW, dH, st) {
                 h: self.height
             }
         },
-        end: function(){
+        end: function () {
             return {
                 x: self.centerX + self.horizontalSpan,
                 y: self.centerY + self.verticalSpan
@@ -112,49 +114,33 @@ var Platform = function (cX, cY, dW, dH, st) {
                 .curveTo(this.control().x, this.control().y, this.end().x, this.center().y);
         }
     }
-
-    //var toPixelSpan = function (dim) {
-    //    return dim / 2;
-    //};
-
-    //return {
-    //    deflection: 0,
-    //    start: function () {
-    //        return {
-    //            x: self.centerX - toPixelSpan(self.width),
-    //            y: self.centerY - toPixelSpan(self.height)
-    //        };
-    //    },
-    //    center: function () {
-    //        return {
-    //            x: self.centerX,
-    //            y: self.centerY,
-    //        };
-    //    },
-    //    control: function () {
-    //        return {
-    //            x: self.centerX,
-    //            y: self.centerY + this.deflection
-    //        };
-    //    },
-    //    end: function () {
-    //        return {
-    //            x: self.centerX + toPixelSpan(width),
-    //            y: self.centerY + toPixelSpan(height)
-    //        };
-    //    },
-    //    dimensions: function () {
-    //        return {
-    //            w: self.width,
-    //            h: self.height
-    //        };
-    //    },
-
-    //};
 };
+
+var AngelSprite = function () {
+    return new createjs.SpriteSheet({
+        images: ["angel.png"],
+        frames: { width: 65, height: 95, regX: 32.5, regY: 47.5 },
+        animations: { flap: [0, 1, "flap"] }
+    });
+};
+
+var AngelAnimation = function (sprite) {
+    var angel = new createjs.BitmapAnimation(sprite);
+    angel.gotoAndPlay("flap");
+    angel.name = "angel";
+    angel.direction = 90;
+    angel.vX = .5;
+    angel.x = CANVAS_WIDTH/2;
+    angel.y = 10;
+    angel.currentFrame = 0;
+    return angel;
+}
 
 var stage = new createjs.Stage("e");
 p = new Platform(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 70, 10, stage);
+var sp = new AngelSprite();
+var aa = new AngelAnimation(sp);
+stage.addChild(aa);
 
 // Add platform
 world.AddStaticBox(
@@ -164,7 +150,7 @@ world.AddStaticBox(
     p.dimensions().h);
 
 // Add angel
-world.AddDynamicBox(
+var angelBox = world.AddDynamicBox(
     toScale(CANVAS_WIDTH) / 2,
     toScale(10),
     65,
@@ -198,6 +184,8 @@ var positionIterations = 10; // compute positions over the next 10 frames
 
 
 function handleTick() {
+    aa.x = angelBox.GetWorldCenter().x * SCALE;
+    aa.y = angelBox.GetWorldCenter().y * SCALE;
     world.DrawDebugData();
     p.render();
     stage.update();
