@@ -16,7 +16,7 @@
 
             return {
                 size: { width: canvas.width, height: canvas.height },
-                world: new box2d.World() 
+                world: new box2d.World()
             };
         },
         initialize: function () {
