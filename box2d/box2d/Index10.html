@@ -10,7 +10,7 @@
     <canvas id="c" style="background: black"></canvas>
     <canvas id="e" style="background: grey"></canvas>
     <script type="text/javascript">
-        /* Now I want easeljs to draw the platform */
+        /* Now I want to encapsulate bodies and shapes into actors */
 
         var CANVAS_WIDTH = 300;
         var CANVAS_HEIGHT = 300;
@@ -35,6 +35,24 @@
 
         function toSpan(dimension) {
             return toScale(dimension) / 2;
+        }
+
+        function Actor(b, s) {
+            var self = this;
+            self.body = b;
+            self.skin = s;
+            return {
+                body: self.body,
+                skin: self.skin,
+                update: function () {
+                    this.skin.x = this.body.GetWorldCenter().x * SCALE;
+                    this.skin.y = this.body.GetWorldCenter().y * SCALE;
+                    this.skin.render();
+                },
+                beginAnimation: function () {
+                    this.skin.beginAnimation();
+                }
+            };
         }
 
         var b2Vec2 = Box2D.Common.Math.b2Vec2
@@ -63,6 +81,16 @@
             return box;
         };
 
+        world.debugWith = function (ctx, scale) {
+            var debugDraw = new b2DebugDraw();
+            debugDraw.SetSprite(ctx);
+            debugDraw.SetDrawScale(scale);
+            debugDraw.SetFillAlpha(0.3);
+            debugDraw.SetLineThickness(1.0);
+            debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
+            this.SetDebugDraw(debugDraw);
+        };
+
         // Distinguish body type by name
         world.AddStaticBox = function (pX, pY, dW, dH) {
             return this.AddBox(pX, pY, dW, dH, b2Body.b2_staticBody);
@@ -84,7 +112,9 @@
             self.height = dH;
             self.horizontalSpan = dW / 2;
             self.verticalSpan = dH / 2;
-
+            self.currentCycle = 3;
+            self.maxCycle = 3;
+            self.direction = 4;
             return {
                 deflection: 0,
                 center: function () {
@@ -118,12 +148,29 @@
                     }
                 },
                 render: function () {
+                    if (self.currentCycle < self.maxCycle) {
+                        this.deflection += self.direction;
+                        if (this.control().y >= (this.center().y + 20) ||
+                                this.control().y <= (this.center().y - 20)) {
+                            self.direction *= -1;
+                        }
+
+
+                        if (this.control().y === this.center().y) {
+                            self.currentCycle++;
+                        }
+                    }
+
                     self.shape.graphics
                         .clear()
                         .setStrokeStyle(this.dimensions().h)
                         .beginStroke("red")
                         .moveTo(this.start().x, this.center().y)
                         .curveTo(this.control().x, this.control().y, this.end().x, this.center().y);
+                },
+                beginAnimation: function () {
+                    self.currentCycle = 0;
+                    self.direction = 4;
                 }
             }
         };
@@ -145,75 +192,83 @@
             angel.x = CANVAS_WIDTH / 2;
             angel.y = 10;
             angel.currentFrame = 0;
+            angel.beginAnimation = function () { };
+            angel.render = function () { };
             return angel;
         }
 
+        var actors = [];
+        actors.create = function (b, s) {
+            var a = new Actor(b, s);
+            this.push(a);
+            return a;
+        };
+
+        actors.hitEach = function (bodies) {
+            this.forEach(function (a) {
+                if (bodies.indexOf(a.body) > -1) {
+                    a.beginAnimation();
+                }
+            });
+        };
+
+        world.addStage = function (s) {
+            this.stage = s;
+        };
+
+        world.addPlatform = function (cX, cY, w, h) {
+            var p = new Platform(cX, cY, w, h, this.stage);
+            var b = this.AddStaticBox(
+                toScale(cX),
+                toScale(cY),
+                w,
+                h);
+            p.render();
+            actors.create(b, p);
+            return p;
+        };
+
+        world.addPlayer = function (cX, cY, w, h) {
+            var sp = new AngelSprite();
+            var s = new AngelAnimation(sp);
+            this.stage.addChild(s);
+
+            var b = this.AddDynamicBox(
+                toScale(cX),
+                toScale(cY),
+                w,
+                h);
+
+            actors.create(b, s);
+            return s;
+        }
+
         var stage = new createjs.Stage("e");
-        p = new Platform(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 70, 10, stage);
-        var sp = new AngelSprite();
-        var aa = new AngelAnimation(sp);
-        stage.addChild(aa);
-
-        // Add platform
-        world.AddStaticBox(
-            toScale(p.center().x),
-            toScale(p.center().y),
-            p.dimensions().w,
-            p.dimensions().h);
-
-        // Add angel
-        var angelBox = world.AddDynamicBox(
-            toScale(CANVAS_WIDTH) / 2,
-            toScale(10),
-            65,
-            95);
-
-        // Display debug info
-        var debugDraw = new b2DebugDraw();
-        debugDraw.SetSprite(context2d);
-        debugDraw.SetDrawScale(SCALE);
-        debugDraw.SetFillAlpha(0.3);
-        debugDraw.SetLineThickness(1.0);
-        debugDraw.SetFlags(b2DebugDraw.e_shapeBit | b2DebugDraw.e_jointBit);
-        world.SetDebugDraw(debugDraw);
-        world.DrawDebugData();
-
-        window.requestAnimFrame = (function () {
-            return window.requestAnimationFrame
-                || window.webkitRequestAnimationFrame
-                || window.mozRequestAnimationFrame
-                || window.oRequestAnimationFrame
-                || window.msRequestAnimationFrame
-                || function (callback) {
-                    window.setTimeout(callback, 1000 / 60);
-                };
-        })();
+        world.addStage(stage);
+        world.addPlatform(CANVAS_WIDTH / 2, CANVAS_HEIGHT / 2, 70, 10);
+        world.addPlayer(CANVAS_WIDTH / 2, 10, 65, 95);
 
         // Define how to move the simulation forward
         var frameRate = 1 / 60; // 60Hz
         var velocityIterations = 10; // compute forces over the next 10 frames
         var positionIterations = 10; // compute positions over the next 10 frames
+        world.debugWith(context2d, SCALE);
+
+
 
         var listener = new Box2D.Dynamics.b2ContactListener;
-        listener.BeginContact = function (contact) {
-            // console.log(contact.GetFixtureA().GetBody().GetUserData());
-        }
-        listener.EndContact = function (contact) {
-            // console.log(contact.GetFixtureA().GetBody().GetUserData());
-        }
         listener.PostSolve = function (contact, impulse) {
-
-        }
-        listener.PreSolve = function (contact, oldManifold) {
-
+            actors.hitEach([contact.GetFixtureA().GetBody(),
+                contact.GetFixtureB().GetBody()]);
         }
         this.world.SetContactListener(listener);
 
         function handleTick() {
-            aa.x = angelBox.GetWorldCenter().x * SCALE;
-            aa.y = angelBox.GetWorldCenter().y * SCALE;
+            actors.forEach(function (a) {
+                a.update();
+            });
+
             world.DrawDebugData();
-            p.render();
             stage.update();
             world.Step(frameRate, velocityIterations, positionIterations);
             world.ClearForces();

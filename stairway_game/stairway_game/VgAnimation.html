@@ -52,16 +52,26 @@
         stage.addChild(ps);
 
         var direction = 4;
+        var maxCycles = 3;
+        var cycleCount = 0;
 
         createjs.Ticker.addEventListener("tick", handleTick);
         function handleTick() {
             RenderPlatform(ps, pm);
             stage.update();
-            pm.deflection += direction;
-            if (pm.control().y >= (pm.location.y + 20) ||
-                    pm.control().y <= (pm.location.y - 20)) {
-                direction *= -1;
+            if (cycleCount < maxCycles) {
+                pm.deflection += direction;
+                if (pm.control().y >= (pm.location.y + 20) ||
+                        pm.control().y <= (pm.location.y - 20)) {
+                    direction *= -1;
+                }
+
+                
+                if (pm.control().y === pm.location.y) {
+                    cycleCount++;
+                }
             }
+
         }
     </script>
 </body>

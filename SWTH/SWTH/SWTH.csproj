@@ -7,12 +7,12 @@
     <ProductVersion>
     </ProductVersion>
     <SchemaVersion>2.0</SchemaVersion>
-    <ProjectGuid>{DB276348-AA70-4989-8340-8007A87F2D59}</ProjectGuid>
+    <ProjectGuid>{39B3B3E5-027B-47F0-97C2-6E3651BB02C3}</ProjectGuid>
     <ProjectTypeGuids>{349c5851-65df-11da-9384-00065b846f21};{fae04ec0-301f-11d3-bf4b-00c04f79efbc}</ProjectTypeGuids>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>box2d</RootNamespace>
-    <AssemblyName>box2d</AssemblyName>
+    <RootNamespace>SWTH</RootNamespace>
+    <AssemblyName>SWTH</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <UseIISExpress>true</UseIISExpress>
     <IISExpressSSLPort />
@@ -57,20 +57,20 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Index10.html" />
-    <Content Include="Index8.html" />
-    <Content Include="Index7.html" />
-    <Content Include="Index6.html" />
-    <Content Include="Index5.html" />
-    <Content Include="Index4.html" />
-    <Content Include="Index3.html" />
-    <Content Include="Index2.html" />
-    <Content Include="Index.html" />
-    <Content Include="Index9.html" />
-    <Content Include="JavaScriptFile.js" />
+    <Content Include="index.html" />
     <Content Include="lib\Box2dWeb-2.1a.3\Box2dWeb-2.1.a.3.min.js" />
     <Content Include="lib\Box2dWeb-2.1a.3\demo.html" />
     <Content Include="lib\Box2dWeb-2.1a.3\example.html" />
+    <Content Include="lib\easeljs-0.6.0\easeljs-0.6.0.min.js" />
+    <Content Include="lib\jasmine-2.0.0-alpha\boot.js" />
+    <Content Include="lib\jasmine-2.0.0-alpha\jasmine-html.js" />
+    <Content Include="lib\jasmine-2.0.0-alpha\jasmine.css" />
+    <Content Include="lib\jasmine-2.0.0-alpha\jasmine.js" />
+    <Content Include="lib\jasmine-2.0.0-alpha\jasmine_favicon.png" />
+    <Content Include="SpecRunner.html" />
+    <Content Include="spec\gameSpec.js" />
+    <Content Include="src\game.js" />
+    <Content Include="src\wrapper.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
@@ -100,7 +100,7 @@
           <AutoAssignPort>True</AutoAssignPort>
           <DevelopmentServerPort>0</DevelopmentServerPort>
           <DevelopmentServerVPath>/</DevelopmentServerVPath>
-          <IISUrl>http://localhost:63673/</IISUrl>
+          <IISUrl>http://localhost:50507/</IISUrl>
           <NTLMAuthentication>False</NTLMAuthentication>
           <UseCustomServer>False</UseCustomServer>
           <CustomServerUrl>
