@@ -73,10 +73,14 @@
             fixDef.restitution = 1; // increased bounce
             fixDef.shape = new b2PolygonShape();
             fixDef.shape.SetAsBox(toSpan(dW), toSpan(dH));
+
             var bodyDef = new b2BodyDef(); bodyDef.type = bT;
             bodyDef.position.x = pX;
             bodyDef.position.y = pY;
-            var box = this.CreateBody(bodyDef);
+
+            // after here we need the world
+            var box = this.CreateBody(bodyDef);  // world gets used here
+            
             box.CreateFixture(fixDef);
             return box;
         };
