@@ -13,7 +13,7 @@
     });
     it("initializes the canvas with its own dimensions", function () {
         var canvas = jasmine.createSpyObj('canvas', ['width', 'height']);
-        new sth.Board(canvas);
+        var board = new sth.Board(canvas);
         expect(canvas.width).toEqual(320);
         expect(canvas.height).toEqual(500);
     });

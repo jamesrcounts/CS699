@@ -37,28 +37,28 @@
             };
         }
       , Platform: function (scale, location, extent) {
-          function bodyDef(pos) {
+          function bodyDef(s, pos) {
               var def = new box2d.BodyDefinition();
               def.type = box2d.Body.Static;
-              def.position.x = pos.x / scale;
-              def.position.y = pos.y / scale;
+              def.position.x = pos.x / s;
+              def.position.y = pos.y / s;
               return def;
           }
-          function fixDef(ext) {
+          function fixDef(s, ext) {
               var def = new box2d.FixtureDefinition();
               def.density = 1.0;
               def.friction = 0.5;
               def.restitution = 1;
               def.shape = new box2d.Shape.Polygon();
-              def.shape.SetAsBox(ext.horizontal, ext.vertical);
+              def.shape.SetAsBox(ext.horizontal / s, ext.vertical / s);
               return def;
           }
 
           return {
               extent: extent,
               location: location,
-              bodyDef: bodyDef(location),
-              fixDef: fixDef(extent)
+              bodyDef: bodyDef(scale, location),
+              fixDef: fixDef(scale, extent)
           };
       }
       , initialize: function (canvas) {
@@ -67,7 +67,7 @@
           var platform = new this.Platform(
               30,
               { x: board.size.width / 2, y: board.size.height / 2 },
-              { horizontal: Math.random() + 0.1, vertical: Math.random() + 0.1 });
+              { horizontal: 35, vertical: 10 });
 
           board.addGamePiece(platform);
           board.debugWith(canvas.getContext("2d"));
