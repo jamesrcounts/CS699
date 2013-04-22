@@ -12,17 +12,17 @@ describe("A platform", function () {
     //it("has a size which is twice the extents", function () {
     //    expect(platform.size).toEqual({ width: 70, height: 20 });
     //});
-    //it("has an origin", function () {
-    //    expect(platform.origin).toEqual({ x: 125, y: 240 });
-    //});
-    //it("has a terminal", function () {
-    //    expect(platform.terminal).toEqual({ x: 195, y: 260 });
-    //});
+    it("has an origin", function () {
+        expect(platform.origin()).toEqual({ x: 125, y: 240 });
+    });
+    it("has a terminal", function () {
+        expect(platform.terminal()).toEqual({ x: 195, y: 260 });
+    });
     it("creates a box2D body definition", function () {
         var bodyDef = new box2d.BodyDefinition();
-        bodyDef.type = box2d.Body.Static;
-        bodyDef.position.x = 160;
-        bodyDef.position.y = 250;
+        bodyDef.type = box2d.Body.Dynamic;
+        bodyDef.position.x = 160 / 30;
+        bodyDef.position.y = 250 / 30;
 
         expect(platform.bodyDef).toEqual(bodyDef);
     });
@@ -32,7 +32,7 @@ describe("A platform", function () {
         fixDef.friction = 0.5;
         fixDef.restitution = 1;
         fixDef.shape = new box2d.Shape.Polygon();
-        fixDef.shape.SetAsBox(35, 10);
+        fixDef.shape.SetAsBox(35 / 30, 10 / 30);
         expect(platform.fixDef).toEqual(fixDef);
     });
 });

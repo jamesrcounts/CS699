@@ -42,20 +42,20 @@
 //    });
 //});
 
-//describe("A board's compare to X function", function () {
-//    it("returns 0 when the point is in bounds", function () {
-//        var board = new sth.Board({});
-//        var point = { x: 100, y: 100 };
-//        expect(board.compareToX(point)).toEqual(0);
-//    });
-//    it("returns -1 when the point is out of bounds to the left", function () {
-//        var board = new sth.Board({});
-//        var point = { x: -100, y: 100 };
-//        expect(board.compareToX(point)).toEqual(-1);
-//    });
-//    it("returns 1 when the point is out of bounds to the right", function () {
-//        var board = new sth.Board({});
-//        var point = { x: 500, y: 100 };
-//        expect(board.compareToX(point)).toEqual(1);
-//    });
-//});
+describe("A board's boundary function", function () {
+    //    it("returns 0 when the point is in bounds", function () {
+    //        var board = new sth.Board({});
+    //        var point = { x: 100, y: 100 };
+    //        expect(board.compareToX(point)).toEqual(0);
+    //    });
+    it("is true when the point is out of bounds to the left", function () {
+        var board = new sth.Board({});
+        var point = { x: -100, y: 100 };
+        expect(board.outOfBounds(point.x)).toBeTruthy();
+    });
+    it("is true when the point is out of bounds to the right", function () {
+        var board = new sth.Board({});
+        var point = { x: 500, y: 100 };
+        expect(board.outOfBounds(point.x)).toBeTruthy();
+    });
+});

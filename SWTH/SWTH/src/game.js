@@ -13,9 +13,13 @@
         Board: function (canvas) {
             canvas.width = 320;
             canvas.height = 500;
+            var pieces = [];
             return {
                 addGamePiece: function (piece) {
-                    this.world.CreateBody(piece.bodyDef).CreateFixture(piece.fixDef);
+                    var body = this.world.CreateBody(piece.bodyDef);
+                    body.CreateFixture(piece.fixDef);
+                    piece.body = body;
+                    pieces.push(piece);
                 }
               , debugWith: function (context) {
                   var debugDraw = new box2d.DebugDraw();
@@ -26,20 +30,31 @@
                   debugDraw.SetFlags(box2d.Debug.Shape | box2d.Debug.Joint);
                   board.world.SetDebugDraw(debugDraw);
               }
+              , outOfBounds: function (c) {
+                  if (c < 0) {
+                      return true;
+                  }
+                  if (c > canvas.width) {
+                      return true;
+                  }
+                  return false;
+              }
               , size: { width: canvas.width, height: canvas.height }
               , update: function () {
                   this.world.Step(1 / 60, 10, 10);
                   this.world.DrawDebugData();
                   this.world.ClearForces();
-
+                  for (var i = 0; i < pieces.length; i++) {
+                      pieces[i].update(this);
+                  }
               }
-              , world: new box2d.World(new box2d.Vector(0, 10), true)
+              , world: new box2d.World(new box2d.Vector(0, 0), true)
             };
         }
       , Platform: function (scale, location, extent) {
           function bodyDef(s, pos) {
               var def = new box2d.BodyDefinition();
-              def.type = box2d.Body.Static;
+              def.type = box2d.Body.Dynamic;
               def.position.x = pos.x / s;
               def.position.y = pos.y / s;
               return def;
@@ -54,11 +69,38 @@
               return def;
           }
 
+          var horizontalForce;
+
           return {
               extent: extent,
               location: location,
+              scale: scale,
               bodyDef: bodyDef(scale, location),
-              fixDef: fixDef(scale, extent)
+              fixDef: fixDef(scale, extent),
+              origin: function () {
+                  return {
+                      x: this.location.x - this.extent.horizontal,
+                      y: this.location.y - this.extent.vertical
+                  };
+              },
+              pushHorizontal: function (force) {
+                  horizontalForce = force;
+                  this.body.ApplyForce(new box2d.Vector(force, 0), this.body.GetPosition());
+              },
+              terminal: function () {
+                  return {
+                      x: this.location.x + this.extent.horizontal,
+                      y: this.location.y + this.extent.vertical
+                  };
+              }
+              , update: function (parent) {
+                  this.location.x = this.body.GetWorldCenter().x * this.scale;
+                  this.location.y = this.body.GetWorldCenter().y * this.scale;
+                  if (parent.outOfBounds(this.origin().x) || parent.outOfBounds(this.terminal().x)) {
+                      horizontalForce = horizontalForce * -1;
+                      this.body.ApplyForce(new box2d.Vector(horizontalForce * 2, 0), this.body.GetPosition());
+                  }
+              }
           };
       }
       , initialize: function (canvas) {
@@ -71,6 +113,9 @@
 
           board.addGamePiece(platform);
           board.debugWith(canvas.getContext("2d"));
+
+          platform.pushHorizontal(100);
+
           animate();
       }
     };
@@ -87,28 +132,12 @@ function init() {
 ////            }
 
 ////            return {
-////                compareToX: function (point) {
-////                    if (point.x < 0) {
-////                        return -1;
-////                    }
-////                    if (point.x > canvas.width) {
-////                        return 1;
-////                    }
-////                    return 0;
-////                },
+
 ////        Platform: function (scale, location, extent) {
 ////            return {
 ////                size: {
 ////                    width: extent.horizontal * 2,
 ////                    height: extent.vertical * 2
-////                },
-////                origin: {
-////                    x: location.x - extent.horizontal,
-////                    y: location.y - extent.vertical
-////                },
-////                terminal: {
-////                    x: location.x + extent.horizontal,
-////                    y: location.y + extent.vertical
 ////                },
 ////            }
 ////        },
