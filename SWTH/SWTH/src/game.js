@@ -34,14 +34,14 @@
 
               }
               , world: new box2d.World(new box2d.Vector(0, 10), true)
-            }
+            };
         }
       , Platform: function (scale, location, extent) {
           function bodyDef(pos) {
               var def = new box2d.BodyDefinition();
               def.type = box2d.Body.Static;
-              def.position.x = pos.x;
-              def.position.y = pos.y;
+              def.position.x = pos.x / scale;
+              def.position.y = pos.y / scale;
               return def;
           }
           function fixDef(ext) {
@@ -59,21 +59,21 @@
               location: location,
               bodyDef: bodyDef(location),
               fixDef: fixDef(extent)
-          }
+          };
       }
       , initialize: function (canvas) {
           board = new this.Board(canvas);
 
           var platform = new this.Platform(
               30,
-              { x: Math.random() * 10, y: Math.random() * 10 },
+              { x: board.size.width / 2, y: board.size.height / 2 },
               { horizontal: Math.random() + 0.1, vertical: Math.random() + 0.1 });
 
           board.addGamePiece(platform);
           board.debugWith(canvas.getContext("2d"));
-          animate();          
+          animate();
       }
-    }
+    };
 })();
 
 function init() {
