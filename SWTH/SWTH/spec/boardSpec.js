@@ -1,8 +1,8 @@
 ﻿describe("A new board", function () {
-    it("requires a canvas", function () {
-        expect(function () { new sth.Board() })
-            .toThrow(new Error("You must initialize a Board with a Canvas reference"));
-    });
+    //it("requires a canvas", function () {
+    //    expect(function () { new sth.Board() })
+    //        .toThrow(new Error("You must initialize a Board with a Canvas reference"));
+    //});
     it("creates a box2d world", function () {
         var board = new sth.Board({});
         expect(board.world instanceof box2d.World).toBeTruthy();
@@ -27,16 +27,18 @@ describe("A board's relationship with a platform", function () {
         var fixDef = new box2d.FixtureDefinition();
         fixDef.density = 1.0;
         fixDef.friction = 0.5;
-        fixDef.restitution = 1; // increased bounce
-        fixDef.shape = new b2PolygonShape();
-        fixDef.shape.SetAsBox(toSpan(dW), toSpan(dH));
-        var bodyDef = new b2BodyDef(); bodyDef.type = bT;
-        bodyDef.position.x = pX;
-        bodyDef.position.y = pY;
-        var box = world.CreateBody(bodyDef); 
+        fixDef.restitution = 1; 
+        fixDef.shape = new box2d.Polygon();
+        fixDef.shape.SetAsBox(35 / 30, 10 / 30);
+        var bodyDef = new box2d.BodyDefinition();
+        bodyDef.type = box2d.Body.Static;
+        bodyDef.position.x = 160;
+        bodyDef.position.y = 250;
+        var box = world.CreateBody(bodyDef);
         box.CreateFixture(fixDef);
-        board.AddPlatform(platform);
-        expect(platform.body).toEqual(box);
+        box.userData = platform;
+        board.addPlatform(platform);
+        expect(platform.body.userData).toEqual(platform);
     });
 });
 

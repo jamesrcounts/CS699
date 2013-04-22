@@ -68,6 +68,7 @@
     <Content Include="lib\jasmine-2.0.0-alpha\jasmine.js" />
     <Content Include="lib\jasmine-2.0.0-alpha\jasmine_favicon.png" />
     <Content Include="SpecRunner.html" />
+    <Content Include="spec\boardSpec.js" />
     <Content Include="spec\gameSpec.js" />
     <Content Include="src\game.js" />
     <Content Include="src\wrapper.js" />

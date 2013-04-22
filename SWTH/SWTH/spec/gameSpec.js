@@ -9,15 +9,15 @@ describe("A platform", function () {
     it("has a extent", function () {
         expect(platform.extent).toEqual(extent);
     });
-    it("has a size which is twice the extents", function () {
-        expect(platform.size).toEqual({ width: 70, height: 20 });
-    });
-    it("has an origin", function () {
-        expect(platform.origin).toEqual({ x: 125, y: 240 });
-    });
-    it("has a terminal", function () {
-        expect(platform.terminal).toEqual({ x: 195, y: 260 });
-    });
+    //it("has a size which is twice the extents", function () {
+    //    expect(platform.size).toEqual({ width: 70, height: 20 });
+    //});
+    //it("has an origin", function () {
+    //    expect(platform.origin).toEqual({ x: 125, y: 240 });
+    //});
+    //it("has a terminal", function () {
+    //    expect(platform.terminal).toEqual({ x: 195, y: 260 });
+    //});
     it("creates a box2D body definition", function () {
         var bodyDef = new box2d.BodyDefinition();
         bodyDef.type = box2d.Body.Static;
@@ -31,8 +31,8 @@ describe("A platform", function () {
         fixDef.density = 1.0;
         fixDef.friction = 0.5;
         fixDef.restitution = 1;
-        fixDef.shape = new box2d.Polygon();
-        fixDef.shape.SetAsBox(35 / 30, 10 / 30);
+        fixDef.shape = new box2d.Shape.Polygon();
+        fixDef.shape.SetAsBox(35, 10);
         expect(platform.fixDef).toEqual(fixDef);
     });
 });
