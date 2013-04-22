@@ -57,10 +57,10 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="example.html" />
     <Content Include="index.html" />
     <Content Include="lib\Box2dWeb-2.1a.3\Box2dWeb-2.1.a.3.min.js" />
     <Content Include="lib\Box2dWeb-2.1a.3\demo.html" />
-    <Content Include="lib\Box2dWeb-2.1a.3\example.html" />
     <Content Include="lib\easeljs-0.6.0\easeljs-0.6.0.min.js" />
     <Content Include="lib\jasmine-2.0.0-alpha\boot.js" />
     <Content Include="lib\jasmine-2.0.0-alpha\jasmine-html.js" />

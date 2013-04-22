@@ -1,25 +1,9 @@
-﻿var board;
-var box2d = (function () {
-    return {
-        Body: {
-            Static: Box2D.Dynamics.b2Body.b2_staticBody
-        }
-      , BodyDefinition: Box2D.Dynamics.b2BodyDef
-      , Debug: {
-          Shape: Box2D.Dynamics.b2DebugDraw.e_shapeBit
-        , Joint: Box2D.Dynamics.b2DebugDraw.e_jointBit
-      }
-      , DebugDraw: Box2D.Dynamics.b2DebugDraw
-      , FixtureDefinition: Box2D.Dynamics.b2FixtureDef
-      , Shape: {
-          Polygon: Box2D.Collision.Shapes.b2PolygonShape
-      }
-      , Vector: Box2D.Common.Math.b2Vec2
-      , World: Box2D.Dynamics.b2World
-    }
-})();
+﻿var sth = (function () {
+    var board;
 
-var sth = (function () {
+    function animate() {
+        window.setInterval(update, 1000 / 60);
+    }
 
     function update() {
         board.update();
@@ -87,7 +71,7 @@ var sth = (function () {
 
           board.addGamePiece(platform);
           board.debugWith(canvas.getContext("2d"));
-          window.setInterval(update, 1000 / 60);
+          animate();          
       }
     }
 })();
@@ -95,6 +79,7 @@ var sth = (function () {
 function init() {
     sth.initialize(document.getElementById("canvas"));
 }
+
 ////    return {
 ////        Board: function (canvas) {
 ////            if (!canvas) {
