@@ -35,4 +35,5 @@ describe("A platform", function () {
         fixDef.shape.SetAsBox(35 / 30, 10 / 30);
         expect(platform.fixDef).toEqual(fixDef);
     });
+    
 });

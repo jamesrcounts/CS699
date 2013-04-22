@@ -1,6 +1,8 @@
 ﻿var canvas = jasmine.createSpyObj('canvas', ['width', 'height', 'addEventListener']);
 describe("A new board", function () {
-    
+    it("is blue", function () {
+        expect(new sth.Board(canvas).color).toEqual('#d0e7f9');
+    });
     //it("requires a canvas", function () {
     //    expect(function () { new sth.Board() })
     //        .toThrow(new Error("You must initialize a Board with a Canvas reference"));
@@ -15,13 +17,18 @@ describe("A new board", function () {
     });
     it("is 320x500 by default", function () {
         var board = new sth.Board(canvas);
-        expect(board.size).toEqual({ width: 320, height: 500 });
+        expect(board.size()).toEqual({ width: 320, height: 500 });
     });
     it("initializes the canvas with its own dimensions", function () {
 
         var board = new sth.Board(canvas);
         expect(canvas.width).toEqual(320);
         expect(canvas.height).toEqual(500);
+    });
+    it('is 960x500 when huge', function () {
+        var board = new sth.Board(canvas);
+        board.size('huge');
+        expect(board.size()).toEqual({ width: 960, height: 500 });
     });
 });
 
