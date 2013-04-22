@@ -19,6 +19,11 @@
                     var body = this.world.CreateBody(piece.bodyDef);
                     body.CreateFixture(piece.fixDef);
                     piece.body = body;
+
+                    var sprite = new createjs.Shape();
+                    this.stage.addChild(sprite);
+                    piece.sprite = sprite;
+
                     pieces.push(piece);
                 }
               , debugWith: function (context) {
@@ -40,10 +45,12 @@
                   return false;
               }
               , size: { width: canvas.width, height: canvas.height }
+              , stage: new createjs.Stage(canvas)
               , update: function () {
                   this.world.Step(1 / 60, 10, 10);
                   this.world.DrawDebugData();
                   this.world.ClearForces();
+                  this.stage.update();
                   for (var i = 0; i < pieces.length; i++) {
                       pieces[i].update(this);
                   }
@@ -86,8 +93,14 @@
               pushHorizontal: function (force) {
                   horizontalForce = force;
                   this.body.ApplyForce(new box2d.Vector(force, 0), this.body.GetPosition());
-              },
-              terminal: function () {
+              }
+              , size: function () {
+                  return {
+                      width: this.extent.horizontal * 2,
+                      height: this.extent.vertical * 2
+                  };
+              }
+              , terminal: function () {
                   return {
                       x: this.location.x + this.extent.horizontal,
                       y: this.location.y + this.extent.vertical
@@ -100,6 +113,13 @@
                       horizontalForce = horizontalForce * -1;
                       this.body.ApplyForce(new box2d.Vector(horizontalForce * 2, 0), this.body.GetPosition());
                   }
+
+                  this.sprite.graphics
+                      .clear()
+                      .setStrokeStyle(this.size().height)
+                      .beginStroke("red")
+                      .moveTo(this.origin().x, this.location.y)
+                      .curveTo(this.location.x, this.location.y, this.terminal().x, this.location.y);
               }
           };
       }
@@ -112,7 +132,7 @@
               { horizontal: 35, vertical: 10 });
 
           board.addGamePiece(platform);
-          board.debugWith(canvas.getContext("2d"));
+          //board.debugWith(canvas.getContext("2d"));
 
           platform.pushHorizontal(100);
 
