@@ -1,10 +1,46 @@
 ﻿var PlayerClass = function (scale, position) {
+    function spriteSheet(size) {
+        var sheet = new createjs.SpriteSheet({
+            images: ["angel.png"],
+            frames: {
+                width: size.width,
+                height: size.height,
+                regX: size.width / 2,
+                regY: size.height / 2
+            },
+            animations: { flap: [0, 1, "flap"] }
+        });
+        return sheet;
+    }
+
+    function animation(sprite, pos) {
+        var shape = new createjs.BitmapAnimation(sprite);
+        shape.gotoAndPlay("flap");
+        shape.name = "player";
+        shape.direction = 90;
+        shape.vX = .5;
+        shape.x = pos.x;
+        shape.y = pos.y;
+        shape.currentFrame = 0;
+        return shape;
+    }
+
     var p = {
         extent: { horizontal: 65 / 2, vertical: 95 / 2 }
-        ,position: position
+        , location: position
+        , scale: scale
+        , update: function () {
+            this.location.x = this.body.GetWorldCenter().x * this.scale;
+            this.location.y = this.body.GetWorldCenter().y * this.scale;
+            this.displayObject.x = this.location.x;
+            this.displayObject.y = this.location.y;
+        }
     };
-    p.bodyDef = gamePiece.bodyDef(scale, box2d.Body.Dynamic, p.position);
+    p.bodyDef = gamePiece.bodyDef(scale, box2d.Body.Dynamic, p.location);
     p.fixDef = gamePiece.fixDef(scale, p.extent);
+    p.displayObject = animation(
+        spriteSheet({ width: 65, height: 95 }),
+        position);
     return p;
 };
 
@@ -40,7 +76,7 @@ var sth = (function () {
 
           board.addGamePiece(platform);
           board.addGamePiece(player);
-          board.debugWith(canvas.getContext("2d"));
+          //board.debugWith(canvas.getContext("2d"));
 
           platform.pushHorizontal(5);
 

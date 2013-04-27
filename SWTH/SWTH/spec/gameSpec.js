@@ -20,7 +20,7 @@ describe("A platform", function () {
     });
     it("creates a box2D body definition", function () {
         var bodyDef = new box2d.BodyDefinition();
-        bodyDef.type = box2d.Body.Dynamic;
+        bodyDef.type = box2d.Body.Kinematic;
         bodyDef.position.x = 160 / 30;
         bodyDef.position.y = 250 / 30;
 
@@ -35,5 +35,9 @@ describe("A platform", function () {
         fixDef.shape.SetAsBox(35 / 30, 10 / 30);
         expect(platform.fixDef).toEqual(fixDef);
     });
-    
+
+    it("creates a createjs DisplayObject", function () {
+        expect(platform.displayObject instanceof createjs.DisplayObject).toBeTruthy();
+    });
+
 });

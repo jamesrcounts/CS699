@@ -10,9 +10,7 @@
             body.CreateFixture(piece.fixDef);
             piece.body = body;
 
-            var sprite = new createjs.Shape();
-            this.stage.addChild(sprite);
-            piece.sprite = sprite;
+            this.stage.addChild(piece.displayObject);
 
             pieces.push(piece);
         }

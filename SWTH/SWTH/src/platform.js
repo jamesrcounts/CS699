@@ -14,6 +14,9 @@
         def.shape = new box2d.Shape.Polygon();
         def.shape.SetAsBox(extent.horizontal / scale, extent.vertical / scale);
         return def;
+    },
+    shape: function () {
+        return new createjs.Shape();
     }
 };
 
@@ -21,6 +24,7 @@ var PlatformClass = function (scale, location, extent) {
     var horizontalForce;
 
     return {
+        displayObject: gamePiece.shape(),
         extent: extent,
         location: location,
         scale: scale,
@@ -56,7 +60,7 @@ var PlatformClass = function (scale, location, extent) {
                 this.body.SetLinearVelocity(new box2d.Vector(horizontalForce, 0));
             }
 
-            this.sprite.graphics
+            this.displayObject.graphics
                 .clear()
                 .setStrokeStyle(this.size().height)
                 .beginStroke("red")
