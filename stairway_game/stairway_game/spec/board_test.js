@@ -1,22 +1,23 @@
+
 describe("The board", function () {
     var board = new Board();
     it("is blue", function () {
         expect(board.getColor()).toEqual('#d0e7f9');
     });
     it('is 320x500 by default', function () {
-        expect(board.getSize()).toEqual({width: 320, height: 500});
+        expect(board.getSize()).toEqual({ width: 320, height: 500 });
     });
     it('is 640x500 when medium', function () {
         board.setSize('medium');
-        expect(board.getSize()).toEqual({width: 640, height: 500});
+        expect(board.getSize()).toEqual({ width: 640, height: 500 });
     });
     it('is 960x500 when huge', function () {
         board.setSize('huge');
-        expect(board.getSize()).toEqual({width: 960, height: 500});
+        expect(board.getSize()).toEqual({ width: 960, height: 500 });
     });
     it('is 320x500 when small', function () {
         board.setSize('small');
-        expect(board.getSize()).toEqual({width: 320, height: 500});
+        expect(board.getSize()).toEqual({ width: 320, height: 500 });
     });
     it('can position platforms within its boundary', function () {
         var platform = new Platform();

@@ -2,7 +2,8 @@
 var box2d = (function () {
     return {
         Body: {
-              Dynamic: Box2D.Dynamics.b2Body.b2_dynamicBody
+            Dynamic: Box2D.Dynamics.b2Body.b2_dynamicBody
+            , Kinematic: Box2D.Dynamics.b2Body.b2_kinematicBody
             , Static: Box2D.Dynamics.b2Body.b2_staticBody
         }
       , BodyDefinition: Box2D.Dynamics.b2BodyDef

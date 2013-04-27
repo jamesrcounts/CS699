@@ -70,7 +70,9 @@
     <Content Include="SpecRunner.html" />
     <Content Include="spec\boardSpec.js" />
     <Content Include="spec\gameSpec.js" />
+    <Content Include="src\board.js" />
     <Content Include="src\game.js" />
+    <Content Include="src\platform.js" />
     <Content Include="src\wrapper.js" />
     <Content Include="Web.config" />
   </ItemGroup>
