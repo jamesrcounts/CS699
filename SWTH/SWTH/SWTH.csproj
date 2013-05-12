@@ -57,6 +57,7 @@
     <Reference Include="System.EnterpriseServices" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="angel.png" />
     <Content Include="example.html" />
     <Content Include="index.html" />
     <Content Include="lib\Box2dWeb-2.1a.3\Box2dWeb-2.1.a.3.min.js" />
@@ -70,9 +71,11 @@
     <Content Include="SpecRunner.html" />
     <Content Include="spec\boardSpec.js" />
     <Content Include="spec\gameSpec.js" />
+    <Content Include="spec\playerSpec.js" />
     <Content Include="src\board.js" />
     <Content Include="src\game.js" />
     <Content Include="src\platform.js" />
+    <Content Include="src\player.js" />
     <Content Include="src\wrapper.js" />
     <Content Include="Web.config" />
   </ItemGroup>

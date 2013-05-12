@@ -16,17 +16,18 @@
         }
       , canvas: canvas
       , color: '#d0e7f9'
-      , debugWith: function (context) {
-          this.debugging = true;
-          
-          var debugDraw = new box2d.DebugDraw();
-          debugDraw.SetSprite(context);
-          debugDraw.SetDrawScale(30.0);
-          debugDraw.SetFillAlpha(0.3);
-          debugDraw.SetLineThickness(1.0);
-          debugDraw.SetFlags(box2d.Debug.Shape | box2d.Debug.Joint);
-          this.world.SetDebugDraw(debugDraw);
-      }
+      , controlPoint: { x: 0, y: 0 }
+        , debugWith: function (context) {
+            this.debugging = true;
+
+            var debugDraw = new box2d.DebugDraw();
+            debugDraw.SetSprite(context);
+            debugDraw.SetDrawScale(30.0);
+            debugDraw.SetFillAlpha(0.3);
+            debugDraw.SetLineThickness(1.0);
+            debugDraw.SetFlags(box2d.Debug.Shape | box2d.Debug.Joint);
+            this.world.SetDebugDraw(debugDraw);
+        }
       , outOfBounds: function (c) {
           if (c < 0) {
               return true;
@@ -44,13 +45,19 @@
               width: this.canvas.width, height: this.canvas.height
           };
       }
+      , setControlPoint: function (pageX, pageY) {
+          var x = pageX - canvas.offsetLeft;
+          var y = pageY - canvas.offsetLeft;
+          this.controlPoint.x = Math.min(Math.max(0, x), canvas.width);
+          this.controlPoint.y = Math.min(Math.max(0, y), canvas.height);
+      }
       , stage: new createjs.Stage(canvas)
       , sprite: new createjs.Shape()
       , update: function () {
           this.world.Step(1 / 60, 10, 10);
           this.world.DrawDebugData();
           this.world.ClearForces();
-          if(!this.debugging) {
+          if (!this.debugging) {
               this.stage.update();
           }
           this.backgroundUpdate();
