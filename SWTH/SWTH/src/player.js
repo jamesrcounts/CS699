@@ -1,4 +1,5 @@
-﻿var PlayerClass = function (scale, position) {
+﻿var PlayerClass = function(scale, position) {
+
     function spriteSheet(size) {
         var sheet = new createjs.SpriteSheet({
             images: ["angel.png"],
@@ -24,25 +25,25 @@
         shape.currentFrame = 0;
         return shape;
     }
-    
+
     function controlDirection(location, controlPoint) {
         if (location.x > controlPoint.x) {
             return -1;
         }
-        
+
         if (location.x < controlPoint.x) {
             return 1;
         }
 
         return 0;
     }
-    
+
     var p = {
-        extent: { horizontal: 65 / 2, vertical: 95 / 2 }
-        , location: position
-        , scale: scale
-        , update: function (parent) {
-            
+        extent: { horizontal: 65 / 2, vertical: 95 / 2 },
+        location: position,
+        scale: scale,
+        update: function(parent) {
+
             this.location.x = this.body.GetWorldCenter().x * this.scale;
             this.location.y = this.body.GetWorldCenter().y * this.scale;
             this.displayObject.x = this.location.x;

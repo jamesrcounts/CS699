@@ -1,16 +1,28 @@
 <html>
-<head>
-    <title>Box2dWeb example</title>
-</head>
-<body onload="init();">
-    <canvas id="canvas"></canvas>
-    <button onclick="update();">Make Bigger</button>
-</body>
-<script src="lib/Box2dWeb-2.1a.3/Box2dWeb-2.1.a.3.min.js" type="text/javascript"></script>
-<script src="lib/easeljs-0.6.0/easeljs-0.6.0.min.js" type="text/javascript"></script>
-<script src="src/wrapper.js" type="text/javascript"></script>
-    <script src="src/board.js" type="text/javascript"></script>
-    <script src="src/platform.js"></script>
-    <script src="src/player.js"></script>
-<script src="src/game.js"></script>
-</html>
+    <head>
+        <title>Box2dWeb example</title>
+        <link rel="stylesheet" type="text/css" href="lib/Tangle-0.1.0/TangleKit/TangleKit.css"/>
+        <link rel="stylesheet" type="text/css" href="src/controls.css" />
+    </head>
+    <body onload=" init(); ">
+        <canvas id="canvas"></canvas>
+        <button onclick=" update(); ">Make Bigger</button>
+        <p>
+            The board is
+            <span data-var="boardSize" data-values="small medium huge" class="DragText"></span>
+            .
+        </p>
+
+    </body>
+    <script src="lib/Box2dWeb-2.1a.3/Box2dWeb-2.1.a.3.min.js" type="text/javascript"> </script>
+    <script src="lib/easeljs-0.6.0/easeljs-0.6.0.min.js" type="text/javascript"> </script>
+    <script src="lib/Tangle-0.1.0/Tangle.js"></script>
+    <script src="lib/Tangle-0.1.0/TangleKit/mootools.js"></script>
+    <script src="lib/Tangle-0.1.0/TangleKit/BVTouchable.js"></script>
+    <script src="src/gamePiece.js"></script>
+    <script src="src/wrapper.js" type="text/javascript"> </script>
+    <script src="src/board.js" type="text/javascript"> </script>
+    <script src="src/platform.js"> </script>
+    <script src="src/player.js"> </script>
+    <script src="src/game.js"> </script>
+    <script src="src/controls.js"></script></html>

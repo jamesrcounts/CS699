@@ -1,5 +1,5 @@
 ﻿
-var sth = (function () {
+var sth = (function() {
     var board;
 
     function animate() {
@@ -8,19 +8,22 @@ var sth = (function () {
 
     function update() {
         board.update();
-    };
+    }
+
+    ;
 
     return {
         Board: window.BoardClass,
         Platform: window.PlatformClass,
         Player: window.PlayerClass,
         boardSize: function (size) {
-            board.size(size);
-        }
-        , setControllerPosition: function (x, y) {
+            if(board)
+                board.size(size || "small");
+        },
+        setControllerPosition: function(x, y) {
             board.setControlPoint(x, y);
-        }
-        , initialize: function (canvas) {
+        },
+        initialize: function(canvas) {
             board = new this.Board(canvas);
 
             var platform = new this.Platform(
@@ -51,6 +54,6 @@ function update() {
     sth.boardSize('huge');
 }
 
-document.onmousemove = function (e) {
+document.onmousemove = function(e) {
     sth.setControllerPosition(e.pageX, e.pageY);
-}
+};

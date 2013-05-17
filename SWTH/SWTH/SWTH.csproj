@@ -74,6 +74,7 @@
     <Content Include="spec\playerSpec.js" />
     <Content Include="src\board.js" />
     <Content Include="src\game.js" />
+    <Content Include="src\gamePiece.js" />
     <Content Include="src\platform.js" />
     <Content Include="src\player.js" />
     <Content Include="src\wrapper.js" />
