@@ -14,6 +14,7 @@ var sth = (function() {
 
     return {
         Board: window.BoardClass,
+        Cloud: window.CloudClass,
         Platform: window.PlatformClass,
         Player: window.PlayerClass,
         boardSize: function (size) {
@@ -37,6 +38,9 @@ var sth = (function() {
 
             board.addGamePiece(platform);
             board.addGamePiece(player);
+            board.addClouds(10);
+            
+            // add clouds here
             //board.debugWith(canvas.getContext("2d"));
 
             platform.pushHorizontal(5);

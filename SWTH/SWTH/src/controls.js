@@ -29,7 +29,7 @@
         },
 
         getValues: function(valuesData) {
-            if (valuesData !== undefined) {
+            if (valuesData !== undefined  && valuesData !== null) {
                 return valuesData.split(" ");
             }
 
@@ -51,14 +51,15 @@
             this.helpElement.set("text", "drag");
         },
 
-        initializeHover: function() {
-            this.isHovering = false;
+        initializeHover: function () {
+            var self = this;
+            self.isHovering = false;
             this.element.addEvent("mouseenter", (function() {
-                this.isHovering = true;
+                self.isHovering = true;
                 this.updateRolloverEffects();
             }).bind(this));
             this.element.addEvent("mouseleave", (function() {
-                this.isHovering = false;
+                self.isHovering = false;
                 this.updateRolloverEffects();
             }).bind(this));
         },

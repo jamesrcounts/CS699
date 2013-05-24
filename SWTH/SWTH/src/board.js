@@ -1,4 +1,4 @@
-﻿var BoardClass = function(canvas) {
+﻿var BoardClass = function (canvas) {
     var sizeIsHuge = /huge/i;
     var sizeIsMedium = /medium/i;
     var sizeIsSmall = /small/i;
@@ -8,8 +8,8 @@
     canvas.height = 500;
     var pieces = [];
     var instance = {
-        addGamePiece: function(piece) {
-            var body = this.world.CreateBody(piece.bodyDef);
+        addPiece: function(piece, layer) {
+            var body = layer.CreateBody(piece.bodyDef);
             body.CreateFixture(piece.fixDef);
             piece.body = body;
 
@@ -17,10 +17,19 @@
 
             pieces.push(piece);
         },
+        addBackgroundPiece: function (piece) {
+            this.addPiece(piece, this.background);
+        },
+        addClouds: function(count) {
+            
+        },
+        addGamePiece: function (piece) {
+            this.addPiece(piece, this.world);
+        },
         canvas: canvas,
         color: '#d0e7f9',
         controlPoint: { x: 0, y: 0 },
-        debugWith: function(context) {
+        debugWith: function (context) {
             this.debugging = true;
 
             var debugDraw = new box2d.DebugDraw();
@@ -31,7 +40,7 @@
             debugDraw.SetFlags(box2d.Debug.Shape | box2d.Debug.Joint);
             this.world.SetDebugDraw(debugDraw);
         },
-        outOfBounds: function(c) {
+        outOfBounds: function (c) {
             if (c < 0) {
                 return true;
             }
@@ -40,7 +49,7 @@
             }
             return false;
         },
-        size: function(boardSize) {
+        size: function (boardSize) {
             if (sizeIsHuge.test(boardSize)) {
                 this.canvas.width = defaultWidth * 3;
             } else if (sizeIsMedium.test(boardSize)) {
@@ -54,7 +63,7 @@
                 height: this.canvas.height
             };
         },
-        setControlPoint: function(pageX, pageY) {
+        setControlPoint: function (pageX, pageY) {
             var x = pageX - canvas.offsetLeft;
             var y = pageY - canvas.offsetLeft;
             this.controlPoint.x = Math.min(Math.max(0, x), canvas.width);
@@ -62,10 +71,15 @@
         },
         stage: new createjs.Stage(canvas),
         sprite: new createjs.Shape(),
-        update: function() {
-            this.world.Step(1 / 60, 10, 10);
-            this.world.DrawDebugData();
-            this.world.ClearForces();
+        updateLayer: function(layer) {
+            layer.Step(1 / 60, 10, 10);
+            layer.DrawDebugData();
+            layer.ClearForces();
+        },
+        update: function () {
+            this.updateLayer(this.background);
+            this.updateLayer(this.world);
+
             if (!this.debugging) {
                 this.stage.update();
             }
@@ -74,13 +88,14 @@
                 pieces[i].update(this);
             }
         },
-        backgroundUpdate: function() {
+        backgroundUpdate: function () {
             this.sprite.graphics
                 .clear()
                 .beginFill(this.color)
                 .drawRect(0, 0, this.size().width, this.size().height);
         },
         world: new box2d.World(new box2d.Vector(0, 10), true)
+        , background: new box2d.World(new box2d.Vector(0, 10), true)
     };
     instance.stage.addChild(instance.sprite);
     return instance;

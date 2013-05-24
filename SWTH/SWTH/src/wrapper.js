@@ -14,6 +14,7 @@ var box2d = (function() {
         DebugDraw: Box2D.Dynamics.b2DebugDraw,
         FixtureDefinition: Box2D.Dynamics.b2FixtureDef,
         Shape: {
+            Circle: Box2D.Collision.Shapes.b2CircleShape,
             Polygon: Box2D.Collision.Shapes.b2PolygonShape
         },
         Vector: Box2D.Common.Math.b2Vec2,
