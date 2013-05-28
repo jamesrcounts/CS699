@@ -34,22 +34,12 @@ var sth = (function () {
                     y: board.size().height / 2
                 });
 
-            var leftWall = new this.Platform(
-                30,
-                {
-                    x: 100,
-                    y: 10
-                },
-                {
-                    hoizontal: 20,
-                    vertical: 20
-                });
 
-            board.addClouds(10);
-            board.addGamePiece(leftWall);
-          //  board.addPlatforms(1);
-            board.addGamePiece(player);
-          //  board.addGround(board.size().width);
+            //board.addClouds(10);
+            //board.addGamePiece(leftWall);
+            //board.addPlatforms(1);
+            //board.addGamePiece(player);
+            //board.addGround(board.size().width);
 
             // add clouds here
             board.debugWith(canvas.getContext("2d"));
