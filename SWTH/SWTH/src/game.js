@@ -1,5 +1,5 @@
 ﻿
-var sth = (function() {
+var sth = (function () {
     var board;
 
     function animate() {
@@ -18,32 +18,42 @@ var sth = (function() {
         Platform: window.PlatformClass,
         Player: window.PlayerClass,
         boardSize: function (size) {
-            if(board)
+            if (board)
                 board.size(size || "small");
         },
-        setControllerPosition: function(x, y) {
+        setControllerPosition: function (x, y) {
             board.setControlPoint(x, y);
         },
-        initialize: function(canvas) {
+        initialize: function (canvas) {
             board = new this.Board(canvas);
-
-            var platform = new this.Platform(
-                30,
-                { x: board.size().width / 2, y: board.size().height / 2 },
-                { horizontal: 35, vertical: 10 });
 
             var player = new this.Player(
                 30,
-                { x: board.size().width / 2, y: 0 });
+                {
+                    x: board.size().width / 2,
+                    y: board.size().height / 2
+                });
 
-            board.addGamePiece(platform);
-            board.addGamePiece(player);
+            var leftWall = new this.Platform(
+                30,
+                {
+                    x: 100,
+                    y: 10
+                },
+                {
+                    hoizontal: 20,
+                    vertical: 20
+                });
+
             board.addClouds(10);
-            
-            // add clouds here
-            //board.debugWith(canvas.getContext("2d"));
+            board.addGamePiece(leftWall);
+          //  board.addPlatforms(1);
+            board.addGamePiece(player);
+          //  board.addGround(board.size().width);
 
-            platform.pushHorizontal(5);
+            // add clouds here
+            board.debugWith(canvas.getContext("2d"));
+
 
             animate();
         }
@@ -58,6 +68,6 @@ function update() {
     sth.boardSize('huge');
 }
 
-document.onmousemove = function(e) {
+document.onmousemove = function (e) {
     sth.setControllerPosition(e.pageX, e.pageY);
 };

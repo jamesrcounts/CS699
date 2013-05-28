@@ -7,6 +7,7 @@ var box2d = (function() {
             Static: Box2D.Dynamics.b2Body.b2_staticBody
         },
         BodyDefinition: Box2D.Dynamics.b2BodyDef,
+        ContactListener: Box2D.Dynamics.b2ContactListener,
         Debug: {
             Shape: Box2D.Dynamics.b2DebugDraw.e_shapeBit,
             Joint: Box2D.Dynamics.b2DebugDraw.e_jointBit

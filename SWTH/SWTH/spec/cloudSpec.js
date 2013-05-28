@@ -26,10 +26,11 @@
         fixtureDef.density = 0.1;
         fixtureDef.friction = 0.1;
         fixtureDef.restitution = 0.1;
-        fixtureDef.shape = new box2d.Shape.Circle();
-        fixtureDef.shape.p.x = 10 / 30;
-        fixtureDef.shape.p.y = 43 / 30;
-        fixtureDef.shape.radius = 10;
+        fixtureDef.shape = new box2d.Shape.Circle(10);
         expect(cloud.fixDef).toEqual(fixtureDef);
+    });
+
+    it("Has a createjs DisplayObject", function () {
+        expect(cloud.displayObject instanceof createjs.DisplayObject).toBeTruthy();
     });
 });
