@@ -122,7 +122,7 @@
                 this.canvas.width = defaultWidth;
             }
 
-//            this.addGround(canvas.width);
+            this.addGround(canvas.width);
             
             return {
                 width: this.canvas.width,
