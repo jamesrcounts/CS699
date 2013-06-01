@@ -1,41 +1,13 @@
 ﻿"use strict";
 
-function KeyboardControls() {
-    var that = this;
-    document.addEventListener('keydown', function (event) {
-        that.onkeydown(event);
-    }, false);
-}
-
-KeyboardControls.prototype.onkeydown = function (e) {
-    e = e || event;
-    var key = e.keyCode;
-    if (key === 37) {
-        this.moveLeft();
-    } else if (key === 38) {
-        this.moveUp();
-    } else if (key === 39) {
-        this.moveRight();
-    }
-};
-
-KeyboardControls.prototype.moveLeft = function () {
-
-};
-
-KeyboardControls.prototype.moveRight = function () {
-
-};
-
-KeyboardControls.prototype.moveUp = function () {
-};
-
 var game = (function () {
 
     var board = createBoard('game');
     board.addPiece(createBackground(board));
     board.addPieces(10, createCloud);
-    board.addPiece(createPlayer(board));
+    
+    var player = createPlayer(board);
+    board.addPiece(player);
 
     var hBoundary = {
         scale: board.scale,
@@ -48,16 +20,16 @@ var game = (function () {
     hBoundary.y = 1;
     board.addPiece(createBoundary(hBoundary));
 
-    //var controls = new KeyboardControls('game');
-    //controls.moveLeft = function () {
-    //    player.moveLeft();
-    //};
-    //controls.moveRight = function () {
-    //    player.moveRight();
-    //};
-    //controls.moveUp = function() {
-    //    player.jump();
-    //};
+    var controls = new KeyboardControls();
+    controls.moveLeft = function () {
+        player.moveLeft();
+    };
+    controls.moveRight = function () {
+        player.moveRight();
+    };
+    controls.moveUp = function() {
+        player.jump();
+    };
 
 
 
