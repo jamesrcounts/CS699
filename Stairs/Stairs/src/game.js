@@ -7,6 +7,16 @@ var game = (function () {
     board.addPieces(10, createCloud);
     
     var player = createPlayer(board);
+    var controls = createKeyboardControls();
+    controls.moveLeft = function () {
+        player.moveLeft();
+    };
+    controls.moveRight = function () {
+        player.moveRight();
+    };
+    controls.moveUp = function () {
+        player.jump();
+    };
     board.addPiece(player);
 
     var hBoundary = {
@@ -20,16 +30,6 @@ var game = (function () {
     hBoundary.y = 1;
     board.addPiece(createBoundary(hBoundary));
 
-    var controls = new KeyboardControls();
-    controls.moveLeft = function () {
-        player.moveLeft();
-    };
-    controls.moveRight = function () {
-        player.moveRight();
-    };
-    controls.moveUp = function() {
-        player.jump();
-    };
 
 
 
