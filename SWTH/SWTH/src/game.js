@@ -40,7 +40,7 @@ var sth = (function () {
 
             //var box = new box2d.Shape.Polygon();
             //box.SetAsBox()
-            
+
             // simple function to draw a box
             //public function draw_box(px,py,w,h,d,ud):void {
             //    my_box.SetAsBox(w/2/world_scale, h/2/world_scale);
