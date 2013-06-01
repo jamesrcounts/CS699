@@ -30,21 +30,16 @@ var game = (function () {
     hBoundary.y = 1;
     board.addPiece(createBoundary(hBoundary));
 
-
-
-
-    //var leftWall = createBoundary({
-    //    scale: 30,
-    //    width: 0.5,
-    //    height: b.height,
-    //    x: 1,
-    //    y: b.height / 2
-    //});
-    //b.addPiece(leftWall);
-
-    //var rightWall = Object.create(leftWall);
-    //rightWall.bodyDefinition.position.x = (b.width - 1) / rightWall.scale;
-    //b.addPiece(rightWall);
+    var vBoundary = {
+        scale: 30,
+        width: 0.5,
+        height: board.height,
+        x: 1,
+        y: board.height / 2
+    };
+    board.addPiece(createBoundary(vBoundary));
+    vBoundary.x = board.width - 1;
+    board.addPiece(createBoundary(vBoundary));
 
     createjs.Ticker.setFPS(60);
     createjs.Ticker.useRAF = true;
