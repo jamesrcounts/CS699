@@ -77,6 +77,7 @@
     <Content Include="lib\Tangle-0.1.0\TangleKit\TangleKit.js" />
     <Content Include="lib\Tangle-0.1.0\TangleTemplate.html" />
     <Content Include="src\background.js" />
+    <Content Include="src\board.js" />
     <Content Include="src\boundary.js" />
     <Content Include="src\box2d.js" />
     <Content Include="src\cloud.js" />
