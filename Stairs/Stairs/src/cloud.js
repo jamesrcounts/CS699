@@ -4,7 +4,7 @@ function createCloud(spec) {
     var cloud = Object.create(piece);
     cloud.scale = spec.scale;
     cloud.isPhysical = true;
-    cloud.fill = 'rgba(255, 255, 255, ' + Math.random() / 2 + ')';
+    cloud.fill = createjs.Graphics.getRGB(255, 255, 255, Math.random() / 2);
     cloud.x = Math.random() * spec.width;
     cloud.y = Math.random() * spec.height;
     cloud.r = Math.random() * 100;
