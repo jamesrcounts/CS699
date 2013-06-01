@@ -1,8 +1,7 @@
 ﻿"use strict";
 
-function KeyboardControls(id) {
+function KeyboardControls() {
     var that = this;
-    this.canvas = document.getElementById(id);
     document.addEventListener('keydown', function (event) {
         that.onkeydown(event);
     }, false);
@@ -33,7 +32,7 @@ KeyboardControls.prototype.moveUp = function () {
 
 var game = (function () {
 
-    var board = new Board('game');
+    var board = createBoard('game');
     board.addPiece(createBackground(board));
     board.addPieces(10, createCloud);
     board.addPiece(createPlayer(board));
@@ -48,7 +47,7 @@ var game = (function () {
     board.addPiece(createBoundary(hBoundary));
     hBoundary.y = 1;
     board.addPiece(createBoundary(hBoundary));
-    
+
     //var controls = new KeyboardControls('game');
     //controls.moveLeft = function () {
     //    player.moveLeft();
