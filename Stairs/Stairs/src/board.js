@@ -26,6 +26,10 @@ function createBoard(canvasId) {
 
         b.body = this.world.CreateBody(b.bodyDefinition);
         b.body.CreateFixture(b.fixtureDefinition);
+        b.body.SetUserData(b);
+    };
+    board.addContactListener = function(l) {
+        this.world.SetContactListener(l);
     };
     board.addPiece = function (p) {
         if (p.isPhysical) {
@@ -34,10 +38,37 @@ function createBoard(canvasId) {
 
         this.addSprite(p);
     };
-    board.addPieces = function (n, creator) {
-        for (var i = 0; i < n; i++) {
-            this.addPiece(creator(this));
+    board.addPieces = function (n, creator, spacerFactory) {
+        var spacer, i, that;
+        that = this;
+        spacerFactory = spacerFactory || function() {
+            return function() {
+                return {
+                    x: Math.random() * that.width,
+                    y: Math.random() * that.height
+                };
+            };
+        };
+
+        spacer = spacerFactory(this, n);
+        
+        for (i = 0; i < n; i++) {
+            this.addPiece(creator(this, spacer()));
         }
+
+        return this;
+    };
+    board.debug = function () {
+        var debugDraw;
+        this.debugging = true;
+
+        debugDraw = new box2d.DebugDraw();
+        debugDraw.SetSprite(this.canvas.getContext("2d"));
+        debugDraw.SetDrawScale(30.0);
+        debugDraw.SetFillAlpha(0.3);
+        debugDraw.SetLineThickness(1.0);
+        debugDraw.SetFlags(box2d.Debug.Shape | box2d.Debug.Joint);
+        this.world.SetDebugDraw(debugDraw);
     };
     board.update = function () {
         this.world.Step(1 / 60, 10, 10);
@@ -48,7 +79,11 @@ function createBoard(canvasId) {
             this.pieces[i].update(this.width, this.height);
         }
 
-        this.stage.update();
+        if (this.debugging) {
+            this.world.DrawDebugData();
+        } else {
+            this.stage.update();
+        }
     };
     return board;
 }

@@ -2,19 +2,49 @@
 
 function createContactListener() {
     var listener = new box2d.ContactListener();
-    listener.PreSolve = function(contact, impulse) {
-        var alpha = contact.GetFixtureA();
-        var beta = contact.GetFixtureB();
+    listener.PreSolve = function (contact) {
+
+        var player = null;
+
+        var alpha = contact.GetFixtureA().GetBody();
+        var alphaPiece = alpha.GetUserData();
+        if (alphaPiece.isPiece("player")) {
+            player = alphaPiece;
+        }
+
+        var beta = contact.GetFixtureB().GetBody();
+        var betaPiece = beta.GetUserData();
+        if (player === null && betaPiece.isPiece("player")) {
+            player = betaPiece;
+        }
+
+        if (player === null) {
+            return;
+        }
+
+        var platform = player === alphaPiece ? betaPiece : alphaPiece;
+        if (!platform.isPiece("platform")) {
+            return;
+        }
+
+        var foot = (player.body.GetPosition().y * player.scale) + (player.height / 2);
+        var head = (platform.body.GetPosition().y * platform.scale) - (platform.height / 2);
+        if (head < foot) {
+            contact.SetEnabled(false);
+        }
+
+        return;
     };
     return listener;
 }
 
 var game = (function () {
-
-    var board = createBoard('game');
+    var board;
+    board = createBoard('game');
     board.addPiece(createBackground(board));
     board.addPieces(10, createCloud);
-    board.addPieces(1, createPlatform);
+
+    board.addPieces(7, createPlatform, evenVerticalSpacing);
 
     var player = createPlayer(board);
     var controls = createKeyboardControls();
@@ -50,6 +80,10 @@ var game = (function () {
     board.addPiece(createBoundary(vBoundary));
     vBoundary.x = board.width - 1;
     board.addPiece(createBoundary(vBoundary));
+
+    board.addContactListener(createContactListener());
+
+    //board.debug();
 
     createjs.Ticker.setFPS(60);
     createjs.Ticker.useRAF = true;

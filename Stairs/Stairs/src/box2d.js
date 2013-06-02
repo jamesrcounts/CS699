@@ -6,6 +6,12 @@ var box2d = {
         Static: Box2D.Dynamics.b2Body.b2_staticBody
     }
     , BodyDefinition: Box2D.Dynamics.b2BodyDef
+    , ContactListener: Box2D.Dynamics.b2ContactListener
+    , Debug: {
+        Shape: Box2D.Dynamics.b2DebugDraw.e_shapeBit,
+        Joint: Box2D.Dynamics.b2DebugDraw.e_jointBit
+    }
+    , DebugDraw: Box2D.Dynamics.b2DebugDraw
     , FixtureDefinition: Box2D.Dynamics.b2FixtureDef
     , Vector: Box2D.Common.Math.b2Vec2
     , Shape: {

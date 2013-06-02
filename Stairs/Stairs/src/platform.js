@@ -1,25 +1,44 @@
 ﻿"use strict";
 
-function createPlatform(spec) {
+function evenVerticalSpacing(board, n) {
+    var y, step;
+    y = 0;
+    step = board.height / n;
+
+    function next() {
+        var pos = {
+            x: Math.random() * board.width,
+            y: y
+        };
+        y += step;
+        return pos;
+    }
+
+    return next;
+}
+
+function createPlatform(spec, center) {
     var platform = Object.create(piece);
+    platform.pieceType = "platform";
     platform.scale = spec.scale;
     platform.width = 70;
     platform.height = 20;
-    platform.x = Math.random() * (spec.width - platform.width);
-    platform.y = spec.height / 2;
     platform.fill = ['#FF8C00', '#EEEE00'];
     platform.isPhysical = true;
-
+    platform.position(center);
     platform.bodyDefinition = new box2d.BodyDefinition();
-    platform.bodyDefinition.position.x = platform.x / platform.scale;
-    platform.bodyDefinition.position.y = platform.y / platform.scale;
+    platform.bodyDefinition.position.x = platform.center.x / platform.scale;
+    platform.bodyDefinition.position.y = platform.center.y / platform.scale;
     platform.bodyDefinition.type = box2d.Body.Kinematic;
 
     platform.fixtureDefinition = new box2d.FixtureDefinition();
+    platform.fixtureDefinition.density = 1;
+    platform.fixtureDefinition.friction = 0.5;
+    platform.fixtureDefinition.restitution = 1.5;
     platform.fixtureDefinition.shape = new box2d.Shape.Polygon();
     platform.fixtureDefinition.shape.SetAsBox(
-        platform.width / platform.scale,
-        platform.height / platform.scale);
+        platform.width / (2 * platform.scale),
+        platform.height / (2 * platform.scale));
 
     platform.collideWith = function (player) {
         player.canJump = true;

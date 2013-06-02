@@ -1,21 +1,25 @@
 ﻿"use strict";
 
 function createPlayer(spec) {
-    var player = Object.create(piece);
+    var player, sprite;
+    player = Object.create(piece);
     player.init();
+    player.pieceType = "player";
     player.isPhysical = true;
     player.scale = spec.scale;
     player.agility = 2500;
     player.canJump = true;
     player.width = 65;
     player.height = 95;
-    player.x = spec.width / 2;
-    player.y = spec.height / 2;
+    player.center = { x: spec.width / 2, y: spec.height / 2 };
+    player.x = player.center.x - (player.width / 2);
+    player.y = player.center.y - (player.height / 2);
 
     player.bodyDefinition = new box2d.BodyDefinition();
     player.bodyDefinition.type = box2d.Body.Dynamic;
-    player.bodyDefinition.position.x = player.x / player.scale;
-    player.bodyDefinition.position.y = player.y / player.scale;
+    player.bodyDefinition.position.x = player.center.x / player.scale;
+    player.bodyDefinition.position.y = player.center.y / player.scale;
+    player.bodyDefinition.fixedRotation = true;
 
     player.fixtureDefinition = new box2d.FixtureDefinition();
     player.fixtureDefinition.density = 1.0;
@@ -26,7 +30,7 @@ function createPlayer(spec) {
         player.width / (2 * player.scale),
         player.height / (2 * player.scale));
 
-    var sprite = new createjs.SpriteSheet({
+    sprite = new createjs.SpriteSheet({
         images: ["angel.png"],
         frames: {
             width: player.width,
@@ -48,8 +52,8 @@ function createPlayer(spec) {
 
     player.update = function () {
         this.updatePosition();
-        this.displayObject.x = this.x;
-        this.displayObject.y = this.y;
+        this.displayObject.x = this.center.x;
+        this.displayObject.y = this.center.y;
         return this;
     };
 
@@ -66,7 +70,7 @@ function createPlayer(spec) {
     };
 
     player.moveLeft = function () {
-        this.move(this.agility * -1);  
+        this.move(this.agility * -1);
         return this;
     };
 
@@ -84,6 +88,6 @@ function createPlayer(spec) {
         }
         return this;
     };
-    
+
     return player;
 };

@@ -6,6 +6,9 @@ var piece = {
         this.displayObject = new createjs.Shape();
         return this;
     }
+    , isPiece: function(c) {
+        return this.pieceType === c;
+    }
     , outOfBounds: function (w, h, x, y) {
         if (x < 0) {
             return true;
@@ -22,12 +25,19 @@ var piece = {
         }
         return false;
     }
+    , position: function(center) {
+        this.center = center;
+        this.x = this.center.x - (this.width / 2);
+        this.y = this.center.y - (this.height / 2);
+    }
     , updatePosition: function () {
         if (!this.isPhysical) {
             throw "this is not a physical object";
         }
-        this.x = this.body.GetWorldCenter().x * this.scale;
-        this.y = this.body.GetWorldCenter().y * this.scale;
+        this.center = {
+            x: this.body.GetWorldCenter().x * this.scale,
+            y: this.body.GetWorldCenter().y * this.scale
+        };
     }
     , update: function () {
     }

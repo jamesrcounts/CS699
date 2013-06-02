@@ -7,16 +7,15 @@ function createCloud(spec) {
     cloud.fill = createjs.Graphics.getRGB(255, 255, 255, Math.random() / 2);
     cloud.x = Math.random() * spec.width;
     cloud.y = Math.random() * spec.height;
-    cloud.r = Math.random() * 100;
+    cloud.radius = Math.random() * 100;
 
     cloud.bodyDefinition = new box2d.BodyDefinition();
     cloud.bodyDefinition.position.x = cloud.x / cloud.scale;
     cloud.bodyDefinition.position.y = cloud.y / cloud.scale;
     cloud.bodyDefinition.type = box2d.Body.Kinematic;
 
-    var shape = new box2d.Shape.Circle(cloud.r / cloud.scale);
     cloud.fixtureDefinition = new box2d.FixtureDefinition();
-    cloud.fixtureDefinition.shape = shape;
+    cloud.fixtureDefinition.shape = new box2d.Shape.Circle(cloud.radius / cloud.scale);
     cloud.fixtureDefinition.isSensor = true;
 
     cloud.draw = function () {
@@ -26,13 +25,21 @@ function createCloud(spec) {
             .setStrokeStyle(1)
             .beginStroke()
             .beginFill(this.fill)
-            .drawCircle(this.x, this.y, this.r);
+            .drawCircle(this.center.x, this.center.y, this.radius);
         return this;
     };
 
     cloud.update = function (width, height) {
+        var position, oob;
         this.body.SetLinearVelocity(new box2d.Vector(0, 1));
-        if (this.outOfBounds(width, height, this.x, this.y)) {
+        position = this.body.GetPosition();
+        oob = this.outOfBounds(
+            width,
+            height,
+            position.x * this.scale,
+            position.y * this.scale);
+        
+        if (oob) {
             this.body.SetPosition(new box2d.Vector(
                 (Math.random() * width) / this.scale,
                 0));
