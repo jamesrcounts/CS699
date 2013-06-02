@@ -81,11 +81,13 @@
     <Content Include="src\boundary.js" />
     <Content Include="src\box2d.js" />
     <Content Include="src\cloud.js" />
+    <Content Include="src\collision.js" />
     <Content Include="src\game.js" />
     <Content Include="src\keyboardControls.js" />
     <Content Include="src\piece.js" />
     <Content Include="src\platform.js" />
     <Content Include="src\player.js" />
+    <Content Include="src\spacing.js" />
     <Content Include="Web.config" />
   </ItemGroup>
   <ItemGroup>
