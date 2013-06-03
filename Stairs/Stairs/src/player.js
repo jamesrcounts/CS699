@@ -54,6 +54,10 @@ function createPlayer(spec) {
         this.updatePosition();
         this.displayObject.x = this.center.x;
         this.displayObject.y = this.center.y;
+        if (this.jumpNext) {
+            this.jumpNext = false;
+            this.body.SetLinearVelocity(new box2d.Vector(0, this.agility * -1));
+        }
         return this;
     };
 
@@ -80,13 +84,12 @@ function createPlayer(spec) {
     };
 
     player.jump = function () {
-        if (this.canJump) {
-            this.body.ApplyForce(
-                new box2d.Vector(0, this.agility),
-                this.body.GetPosition());
-            this.canJump = false;
-        }
-        return this;
+        this.jumpNext = true;
+        //var v = this.body.GetLinearVelocity();
+        //if (v.y < 0) {
+        //    this.body.SetLinearVelocity(new box2d.Vector(0, this.agility));
+        //}
+        //return this;
     };
 
     return player;

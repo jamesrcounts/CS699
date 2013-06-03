@@ -22,6 +22,7 @@ function createPlatform(spec, center) {
     platform.fixtureDefinition.shape.SetAsBox(
         platform.width / (2 * platform.scale),
         platform.height / (2 * platform.scale));
+    platform.fixtureDefinition.isSensor = true;
 
     platform.collideWith = function (player) {
         player.canJump = true;
@@ -38,10 +39,10 @@ function createPlatform(spec, center) {
             y: origin.y + this.height
         };
 
-        var center = {
+        this.position({
             x: this.x + (this.width / 2),
             y: this.y + (this.height / 2)
-        };
+        });
 
         this.displayObject
             .graphics

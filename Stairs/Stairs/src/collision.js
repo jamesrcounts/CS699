@@ -2,7 +2,7 @@
 
 function createContactListener() {
     var listener = new box2d.ContactListener();
-    listener.PreSolve = function (contact) {
+    listener.BeginContact = function (contact) {
 
         var player = null;
 
@@ -29,8 +29,11 @@ function createContactListener() {
 
         var foot = (player.body.GetPosition().y * player.scale) + (player.height / 2);
         var head = (platform.body.GetPosition().y * platform.scale) - (platform.height / 2);
-        if (head < foot) {
-            contact.SetEnabled(false);
+        //if (head < foot) {
+        //    contact.SetEnabled(false);
+        //}
+        if (foot < head) {
+            player.jump();
         }
 
         return;
