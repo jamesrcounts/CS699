@@ -62,8 +62,8 @@ function createPlatform(spec, center) {
 
     platform.onContact = function (other) {
         other.body
-            .ApplyImpulse(
-            new box2d.Vector(0, -50),
+            .SetLinearVelocity(
+            new box2d.Vector(0, -10),
             other.body.GetWorldCenter());
     }
 
