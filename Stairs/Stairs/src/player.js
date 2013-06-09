@@ -56,7 +56,9 @@ function createPlayer(spec) {
         this.displayObject.y = this.center.y;
         if (this.jumpNext) {
             this.jumpNext = false;
-            this.body.SetLinearVelocity(new box2d.Vector(0, this.agility * -1));
+            this.body.ApplyForce(
+                new box2d.Vector(0, this.agility * -1),
+                this.body.GetPosition());
         }
         return this;
     };
