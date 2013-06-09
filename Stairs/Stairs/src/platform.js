@@ -15,18 +15,18 @@ function createPlatform(spec, center) {
     platform.bodyDefinition.type = box2d.Body.Kinematic;
 
     platform.fixtureDefinition = new box2d.FixtureDefinition();
-    platform.fixtureDefinition.density = 1;
-    platform.fixtureDefinition.friction = 0.5;
-    platform.fixtureDefinition.restitution = 1.5;
+    //platform.fixtureDefinition.density = 1;
+    //platform.fixtureDefinition.friction = 0.5;
+    //platform.fixtureDefinition.restitution = 1.5;
     platform.fixtureDefinition.shape = new box2d.Shape.Polygon();
     platform.fixtureDefinition.shape.SetAsBox(
         platform.width / (2 * platform.scale),
         platform.height / (2 * platform.scale));
     platform.fixtureDefinition.isSensor = true;
 
-    platform.collideWith = function (player) {
-        player.canJump = true;
-    };
+    //platform.collideWith = function (player) {
+    //    player.canJump = true;
+    //};
 
     platform.draw = function () {
         var origin = {
@@ -59,5 +59,13 @@ function createPlatform(spec, center) {
     };
 
     platform.update = platform.draw;
+
+    platform.onContact = function (other) {
+        other.body
+            .ApplyImpulse(
+            new box2d.Vector(0, -50),
+            other.body.GetWorldCenter());
+    }
+
     return platform.init();
 }

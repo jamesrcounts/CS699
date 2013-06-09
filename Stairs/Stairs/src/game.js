@@ -26,10 +26,13 @@ var game = (function () {
         width: board.width,
         height: 0.5,
         x: board.width / 2,
-        y: board.height - 1
+        y: board.height - 1,
+        id: "ground"
     };
-    board.addPiece(createBoundary(hBoundary));
+    var ground = createBoundary(hBoundary);
+    board.addPiece(ground);
     hBoundary.y = 1;
+    hBoundary.id = "roof";
     board.addPiece(createBoundary(hBoundary));
 
     var vBoundary = {
@@ -49,8 +52,14 @@ var game = (function () {
 
     createjs.Ticker.setFPS(60);
     createjs.Ticker.useRAF = true;
-    createjs.Ticker.addEventListener("tick", function () {
+    var update = function () {
         board.update();
-    });
+    };
+
+    createjs.Ticker.addEventListener("tick", update);
+    ground.onContact = function () {
+        createjs.Ticker.removeEventListener("tick", update);
+    };
+
     return {};
 })();

@@ -7,7 +7,10 @@ var piece = {
         return this;
     }
     , isPiece: function(c) {
-        return this.pieceType === c;
+        return this.pieceType === c || this.id === c;
+    }
+    , onContact: function () {
+        return this;
     }
     , outOfBounds: function (w, h, x, y) {
         if (x < 0) {

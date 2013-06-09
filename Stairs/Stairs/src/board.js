@@ -9,7 +9,7 @@ function createBoard(canvasId) {
     board.canvas.width = board.width;
     board.canvas.height = board.height;
     board.stage = new createjs.Stage(board.canvas);
-    board.world = new box2d.World(new box2d.Vector(0, 0), true);
+    board.world = new box2d.World(new box2d.Vector(0, 10), true);
     board.scale = 30;
     board.addSprite = function (s) {
         this.stage.addChild(s.displayObject);
