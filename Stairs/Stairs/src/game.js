@@ -48,7 +48,7 @@ var game = (function () {
 
     board.addContactListener(createContactListener());
 
-    board.debug();
+    //board.debug();
 
     createjs.Ticker.setFPS(60);
     createjs.Ticker.useRAF = true;
@@ -61,5 +61,7 @@ var game = (function () {
         createjs.Ticker.removeEventListener("tick", update);
     };
 
-    return {};
+    return {
+        boardSize: function () { return this; }
+    };
 })();

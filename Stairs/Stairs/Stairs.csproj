@@ -82,7 +82,9 @@
     <Content Include="src\box2d.js" />
     <Content Include="src\cloud.js" />
     <Content Include="src\collision.js" />
+    <Content Include="src\controls.css" />
     <Content Include="src\game.js" />
+    <Content Include="src\interface.js" />
     <Content Include="src\keyboardControls.js" />
     <Content Include="src\piece.js" />
     <Content Include="src\platform.js" />

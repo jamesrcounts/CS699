@@ -14,7 +14,7 @@ function createPlatform(spec, center) {
     platform.bodyDefinition.position.y = platform.center.y / platform.scale;
     platform.bodyDefinition.type = box2d.Body.Kinematic;
 
-    platform.bodyExtent = function(){
+    platform.bodyExtent = function () {
         return {
             width: this.width / (2 * platform.scale),
             height: this.height / (2 * platform.scale)
@@ -66,17 +66,14 @@ function createPlatform(spec, center) {
     platform.update = platform.draw;
 
     platform.onContact = function (other) {
-        var collisionHeight, magnitude, vy;
-
-        // how high along the y-axis?
-        vy = this.body.GetWorldCenter().y -
-            other.body.GetWorldCenter().y;
+        var vy = (this.body.GetWorldCenter().y ) -
+            (other.body.GetWorldCenter().y );
 
         if (0 < vy) {
-                other.body
-                    .SetLinearVelocity(
-                    new box2d.Vector(0, -10),
-                    other.body.GetWorldCenter());
+            other.body
+                .SetLinearVelocity(
+                new box2d.Vector(0, -10),
+                other.body.GetWorldCenter());
         }
     }
 

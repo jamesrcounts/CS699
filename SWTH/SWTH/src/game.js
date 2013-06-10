@@ -10,8 +10,6 @@ var sth = (function () {
         board.update();
     }
 
-    ;
-
     return {
         Board: window.BoardClass,
         Cloud: window.CloudClass,
