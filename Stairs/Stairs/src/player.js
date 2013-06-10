@@ -8,13 +8,19 @@ function createPlayer(spec) {
     player.isPhysical = true;
     player.scale = spec.scale;
     player.agility = 2500;
-    player.canJump = true;
     player.width = 65;
     player.height = 95;
     player.center = { x: spec.width / 2, y: spec.height / 2 };
     player.x = player.center.x - (player.width / 2);
     player.y = player.center.y - (player.height / 2);
 
+    player.bodyExtent = function () {
+        return {
+            h: player.width / (2 * player.scale),
+            v: player.height / (2 * player.scale)
+        };
+    };
+    
     player.bodyDefinition = new box2d.BodyDefinition();
     player.bodyDefinition.type = box2d.Body.Dynamic;
     player.bodyDefinition.position.x = player.center.x / player.scale;
@@ -27,8 +33,8 @@ function createPlayer(spec) {
     player.fixtureDefinition.restitution = 1.0;
     player.fixtureDefinition.shape = new box2d.Shape.Polygon();
     player.fixtureDefinition.shape.SetAsBox(
-        player.width / (2 * player.scale),
-        player.height / (2 * player.scale));
+        player.bodyExtent().h,
+        player.bodyExtent().v        );
 
     sprite = new createjs.SpriteSheet({
         images: ["angel.png"],
@@ -85,13 +91,11 @@ function createPlayer(spec) {
         return this;
     };
 
-    player.jump = function () {
-        this.jumpNext = true;
-        //var v = this.body.GetLinearVelocity();
-        //if (v.y < 0) {
-        //    this.body.SetLinearVelocity(new box2d.Vector(0, this.agility));
-        //}
-        //return this;
+    player.terminal = function () {
+        return {
+            x: this.body.GetWorldCenter().x + this.bodyExtent.h,
+            y: this.body.GetWorldCenter().y + this.bodyExtent.v
+        };
     };
 
     return player;

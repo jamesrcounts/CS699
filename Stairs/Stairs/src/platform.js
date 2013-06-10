@@ -15,29 +15,27 @@ function createPlatform(spec, center) {
     platform.bodyDefinition.type = box2d.Body.Kinematic;
 
     platform.fixtureDefinition = new box2d.FixtureDefinition();
-    //platform.fixtureDefinition.density = 1;
-    //platform.fixtureDefinition.friction = 0.5;
-    //platform.fixtureDefinition.restitution = 1.5;
     platform.fixtureDefinition.shape = new box2d.Shape.Polygon();
     platform.fixtureDefinition.shape.SetAsBox(
         platform.width / (2 * platform.scale),
         platform.height / (2 * platform.scale));
     platform.fixtureDefinition.isSensor = true;
 
-    //platform.collideWith = function (player) {
-    //    player.canJump = true;
-    //};
-
-    platform.draw = function () {
-        var origin = {
+    platform.origin = function () {
+        return {
             x: this.x,
             y: this.y
         };
+    };
 
-        var terminal = {
-            x: origin.x + this.width,
-            y: origin.y + this.height
+    platform.terminal = function () {
+        return {
+            x: this.origin().x + this.width,
+            y: this.origin().y + this.height
         };
+    };
+
+    platform.draw = function () {
 
         this.position({
             x: this.x + (this.width / 2),
@@ -52,19 +50,21 @@ function createPlatform(spec, center) {
                 platform.fill, [0, 1],
                 center.x, center.y, 5,
                 center.x, center.y, 45)
-            .moveTo(origin.x, center.y)
+            .moveTo(this.origin().x, center.y)
             .curveTo(
                 center.x, center.y,
-                terminal.x, center.y);
+                this.terminal().x, center.y);
     };
 
     platform.update = platform.draw;
 
     platform.onContact = function (other) {
-        other.body
-            .SetLinearVelocity(
-            new box2d.Vector(0, -10),
-            other.body.GetWorldCenter());
+        if (other.terminal().y <= this.origin().y) {
+            other.body
+                .SetLinearVelocity(
+                new box2d.Vector(0, -10),
+                other.body.GetWorldCenter());
+        }
     }
 
     return platform.init();
