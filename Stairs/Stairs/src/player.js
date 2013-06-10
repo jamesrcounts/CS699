@@ -16,8 +16,8 @@ function createPlayer(spec) {
 
     player.bodyExtent = function () {
         return {
-            h: player.width / (2 * player.scale),
-            v: player.height / (2 * player.scale)
+            width: player.width / (2 * player.scale),
+            height: player.height / (2 * player.scale)
         };
     };
     
@@ -33,8 +33,8 @@ function createPlayer(spec) {
     player.fixtureDefinition.restitution = 1.0;
     player.fixtureDefinition.shape = new box2d.Shape.Polygon();
     player.fixtureDefinition.shape.SetAsBox(
-        player.bodyExtent().h,
-        player.bodyExtent().v        );
+        player.bodyExtent().width,
+        player.bodyExtent().height        );
 
     sprite = new createjs.SpriteSheet({
         images: ["angel.png"],
@@ -93,8 +93,8 @@ function createPlayer(spec) {
 
     player.terminal = function () {
         return {
-            x: this.body.GetWorldCenter().x + this.bodyExtent.h,
-            y: this.body.GetWorldCenter().y + this.bodyExtent.v
+            x: this.body.GetWorldCenter().x + this.bodyExtent.width,
+            y: this.body.GetWorldCenter().y + this.bodyExtent.height
         };
     };
 

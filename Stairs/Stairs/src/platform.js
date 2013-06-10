@@ -14,11 +14,18 @@ function createPlatform(spec, center) {
     platform.bodyDefinition.position.y = platform.center.y / platform.scale;
     platform.bodyDefinition.type = box2d.Body.Kinematic;
 
+    platform.bodyExtent = function(){
+        return {
+            width: this.width / (2 * platform.scale),
+            height: this.height / (2 * platform.scale)
+        };
+    };
+
     platform.fixtureDefinition = new box2d.FixtureDefinition();
     platform.fixtureDefinition.shape = new box2d.Shape.Polygon();
     platform.fixtureDefinition.shape.SetAsBox(
-        platform.width / (2 * platform.scale),
-        platform.height / (2 * platform.scale));
+        platform.bodyExtent().width,
+        platform.bodyExtent().height);
     platform.fixtureDefinition.isSensor = true;
 
     platform.origin = function () {
@@ -59,11 +66,17 @@ function createPlatform(spec, center) {
     platform.update = platform.draw;
 
     platform.onContact = function (other) {
-        if (other.terminal().y <= this.origin().y) {
-            other.body
-                .SetLinearVelocity(
-                new box2d.Vector(0, -10),
-                other.body.GetWorldCenter());
+        var collisionHeight, magnitude, vy;
+
+        // how high along the y-axis?
+        vy = this.body.GetWorldCenter().y -
+            other.body.GetWorldCenter().y;
+
+        if (0 < vy) {
+                other.body
+                    .SetLinearVelocity(
+                    new box2d.Vector(0, -10),
+                    other.body.GetWorldCenter());
         }
     }
 
