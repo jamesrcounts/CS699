@@ -6,7 +6,7 @@ function createCloud(spec) {
     cloud.isPhysical = true;
     cloud.fill = createjs.Graphics.getRGB(255, 255, 255, Math.random() / 2);
     cloud.x = Math.random() * spec.width();
-    cloud.y = Math.random() * spec.height;
+    cloud.y = Math.random() * spec.height();
     cloud.radius = Math.random() * 100;
 
     cloud.bodyDefinition = new box2d.BodyDefinition();

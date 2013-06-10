@@ -26,7 +26,7 @@ var game = (function () {
         width: board.width(),
         height: 0.5,
         x: board.width() / 2,
-        y: board.height - 1,
+        y: board.height() - 1,
         id: "ground"
     };
     var ground = createBoundary(hBoundary);
@@ -38,9 +38,9 @@ var game = (function () {
     var vBoundary = {
         scale: 30,
         width: 0.5,
-        height: board.height,
+        height: board.height(),
         x: 1,
-        y: board.height / 2
+        y: board.height() / 2
     };
     board.addPiece(createBoundary(vBoundary));
     vBoundary.x = board.width() - 1;

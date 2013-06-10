@@ -4,7 +4,7 @@ function createBackground(spec) {
     var background = Object.create(piece);
     background.fill = '#d0e7f9';
     background.width = spec.width();
-    background.height = spec.height;
+    background.height = spec.height();
     background.update = function() {
         this.displayObject
             .graphics

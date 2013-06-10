@@ -3,11 +3,13 @@
 function createBoard(canvasId) {
     var board = {};
     board.pieces = [];
-    board.width = function () { return 320; };
-    board.height = 500;
+    
+    
     board.canvas = document.getElementById(canvasId);
-    board.canvas.width = board.width();
-    board.canvas.height = board.height;
+    board.canvas.width = 320;
+    board.width = function () { return this.canvas.width; };
+    board.canvas.height = 500;
+    board.height = function () { return this.canvas.height; };
     board.stage = new createjs.Stage(board.canvas);
     board.world = new box2d.World(new box2d.Vector(0, 10), true);
     board.scale = 30;
@@ -45,7 +47,7 @@ function createBoard(canvasId) {
             return function () {
                 return {
                     x: Math.random() * that.width(),
-                    y: Math.random() * that.height
+                    y: Math.random() * that.height()
                 };
             };
         };
@@ -76,7 +78,7 @@ function createBoard(canvasId) {
 
         var l = this.pieces.length;
         for (var i = 0; i < l; i++) {
-            this.pieces[i].update(this.width(), this.height);
+            this.pieces[i].update(this.width(), this.height());
         }
 
         if (this.debugging) {

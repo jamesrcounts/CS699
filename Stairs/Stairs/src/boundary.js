@@ -10,9 +10,6 @@ function createBoundary(spec) {
     boundary.bodyDefinition.position.x = spec.x / boundary.scale;
     boundary.bodyDefinition.position.y = spec.y / boundary.scale;
     boundary.bodyDefinition.type = box2d.Body.Kinematic;
-    //boundary.bodyDefinition.density = 1.0;
-    //boundary.bodyDefinition.friction = 0.5;
-    //boundary.bodyDefinition.restitution = 1;
 
     boundary.fixtureDefinition = new box2d.FixtureDefinition();
     boundary.fixtureDefinition.shape = new box2d.Shape.Polygon();
