@@ -3,13 +3,14 @@
 function createBoard(canvasId) {
     var board = {};
     board.pieces = [];
-    
-    
+
     board.canvas = document.getElementById(canvasId);
     board.canvas.width = 320;
-    board.width = function () { return this.canvas.width; };
     board.canvas.height = 500;
+
+    board.width = function () { return this.canvas.width; };
     board.height = function () { return this.canvas.height; };
+
     board.stage = new createjs.Stage(board.canvas);
     board.world = new box2d.World(new box2d.Vector(0, 10), true);
     board.scale = 30;
