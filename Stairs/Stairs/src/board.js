@@ -3,10 +3,10 @@
 function createBoard(canvasId) {
     var board = {};
     board.pieces = [];
-    board.width = 320;
+    board.width = function () { return 320; };
     board.height = 500;
     board.canvas = document.getElementById(canvasId);
-    board.canvas.width = board.width;
+    board.canvas.width = board.width();
     board.canvas.height = board.height;
     board.stage = new createjs.Stage(board.canvas);
     board.world = new box2d.World(new box2d.Vector(0, 10), true);
@@ -28,7 +28,7 @@ function createBoard(canvasId) {
         b.body.CreateFixture(b.fixtureDefinition);
         b.body.SetUserData(b);
     };
-    board.addContactListener = function(l) {
+    board.addContactListener = function (l) {
         this.world.SetContactListener(l);
     };
     board.addPiece = function (p) {
@@ -41,17 +41,17 @@ function createBoard(canvasId) {
     board.addPieces = function (n, creator, spacerFactory) {
         var spacer, i, that;
         that = this;
-        spacerFactory = spacerFactory || function() {
-            return function() {
+        spacerFactory = spacerFactory || function () {
+            return function () {
                 return {
-                    x: Math.random() * that.width,
+                    x: Math.random() * that.width(),
                     y: Math.random() * that.height
                 };
             };
         };
 
         spacer = spacerFactory(this, n);
-        
+
         for (i = 0; i < n; i++) {
             this.addPiece(creator(this, spacer()));
         }
@@ -76,7 +76,7 @@ function createBoard(canvasId) {
 
         var l = this.pieces.length;
         for (var i = 0; i < l; i++) {
-            this.pieces[i].update(this.width, this.height);
+            this.pieces[i].update(this.width(), this.height);
         }
 
         if (this.debugging) {

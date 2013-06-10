@@ -23,9 +23,9 @@ var game = (function () {
 
     var hBoundary = {
         scale: board.scale,
-        width: board.width,
+        width: board.width(),
         height: 0.5,
-        x: board.width / 2,
+        x: board.width() / 2,
         y: board.height - 1,
         id: "ground"
     };
@@ -43,7 +43,7 @@ var game = (function () {
         y: board.height / 2
     };
     board.addPiece(createBoundary(vBoundary));
-    vBoundary.x = board.width - 1;
+    vBoundary.x = board.width() - 1;
     board.addPiece(createBoundary(vBoundary));
 
     board.addContactListener(createContactListener());

@@ -7,7 +7,7 @@ function evenVerticalSpacing(board, n) {
 
     function next() {
         var pos = {
-            x: Math.random() * board.width,
+            x: Math.random() * board.width(),
             y: y
         };
         y += step;

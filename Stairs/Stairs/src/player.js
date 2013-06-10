@@ -10,7 +10,7 @@ function createPlayer(spec) {
     player.agility = 2500;
     player.width = 65;
     player.height = 95;
-    player.center = { x: spec.width / 2, y: spec.height / 2 };
+    player.center = { x: spec.width() / 2, y: spec.height / 2 };
     player.x = player.center.x - (player.width / 2);
     player.y = player.center.y - (player.height / 2);
 
