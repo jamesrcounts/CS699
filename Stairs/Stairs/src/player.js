@@ -1,13 +1,13 @@
 ﻿"use strict";
 
 function createPlayer(spec) {
-    var player, sprite;
+    var player, sprite, minAgility;
     player = Object.create(piece);
     player.init();
     player.pieceType = "player";
     player.isPhysical = true;
     player.scale = spec.scale;
-    player.agility = 2500;
+
     player.width = 65;
     player.height = 95;
     player.center = { x: spec.width() / 2, y: spec.height() / 2 };
@@ -20,7 +20,7 @@ function createPlayer(spec) {
             height: player.height / (2 * player.scale)
         };
     };
-    
+
     player.bodyDefinition = new box2d.BodyDefinition();
     player.bodyDefinition.type = box2d.Body.Dynamic;
     player.bodyDefinition.position.x = player.center.x / player.scale;
@@ -34,7 +34,7 @@ function createPlayer(spec) {
     player.fixtureDefinition.shape = new box2d.Shape.Polygon();
     player.fixtureDefinition.shape.SetAsBox(
         player.bodyExtent().width,
-        player.bodyExtent().height        );
+        player.bodyExtent().height);
 
     sprite = new createjs.SpriteSheet({
         images: ["angel.png"],
@@ -55,6 +55,27 @@ function createPlayer(spec) {
     player.displayObject.x = player.x;
     player.displayObject.y = player.y;
     player.displayObject.currentFrame = 0;
+
+    minAgility = 250;
+
+    player.flies = function (agility) {
+        var factor;
+        switch (true) {
+            case /quickly/i.test(agility):
+                factor = 100;
+                break;
+            case /slowly/i.test(agility):
+                factor = 1;
+                break;
+            default:
+                factor = 10;
+                break;
+        }
+
+        this.agility = minAgility * factor;
+    };
+
+    player.flies("normally");
 
     player.update = function () {
         this.updatePosition();

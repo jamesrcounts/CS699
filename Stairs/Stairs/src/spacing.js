@@ -16,3 +16,25 @@ function evenVerticalSpacing(board, n) {
 
     return next;
 }
+
+function createCloseHorizontalSpacing(pieceWidth) {
+    return function (board, n) {
+        var w, count;
+        w = pieceWidth;
+        count = n;
+        
+        return function() {
+
+        };
+    };
+}
+
+function randomSpacing(board) {
+    return function() {
+        return {
+            x: Math.random() * board.width(),
+            y: Math.random() * board.height()
+        };
+    };
+}
+

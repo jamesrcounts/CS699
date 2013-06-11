@@ -141,9 +141,11 @@
     return new Tangle(document, {
         initialize: function () {
             this.boardSize = "small";
+            this.playerAgility = "normally";
         },
         update: function () {
             game.boardSize(this.boardSize);
+            game.playerAgility(this.playerAgility);
         }
     });
 })();

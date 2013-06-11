@@ -56,17 +56,9 @@ function createBoard(canvasId) {
     };
 
     board.addPieces = function (n, creator, spacerFactory) {
-        var spacer, i, that;
-        that = this;
-        spacerFactory = spacerFactory || function () {
-            return function () {
-                return {
-                    x: Math.random() * that.width(),
-                    y: Math.random() * that.height()
-                };
-            };
-        };
-
+        var spacer, i;
+        
+        spacerFactory = spacerFactory || randomSpacing;
         spacer = spacerFactory(this, n);
 
         for (i = 0; i < n; i++) {
@@ -104,8 +96,8 @@ function createBoard(canvasId) {
 
         this.width(defaultWidth * factor);
         return this;
-    }
-
+    };
+    
     board.update = function () {
         this.world.Step(1 / 60, 10, 10);
         this.world.ClearForces();

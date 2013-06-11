@@ -1,15 +1,15 @@
 ﻿"use strict";
 
 var game = (function () {
-    var board;
+    var board, player, controls;
     board = createBoard('game');
     board.addPiece(createBackground(board));
     board.addPieces(10, createCloud);
 
     board.addPieces(7, createPlatform, evenVerticalSpacing);
 
-    var player = createPlayer(board);
-    var controls = createKeyboardControls();
+    player = createPlayer(board);
+    controls = createKeyboardControls();
     controls.moveLeft = function () {
         player.moveLeft();
     };
@@ -67,6 +67,12 @@ var game = (function () {
                 board.size(size || "small");
             }
 
+            return this;
+        }
+        , playerAgility: function (agility) {
+            if (player) {
+                player.flies(agility || "normally");
+            }
             return this;
         }
     };
