@@ -1,23 +1,34 @@
 ﻿"use strict";
 
 function createBoard(canvasId) {
-    var board = {};
+    var board, defaultWidth;
+    board = {};
+    defaultWidth = 320;
     board.pieces = [];
 
     board.canvas = document.getElementById(canvasId);
-    board.canvas.width = 320;
+    board.canvas.width = defaultWidth;
     board.canvas.height = 500;
 
-    board.width = function () { return this.canvas.width; };
+    board.width = function (w) {
+        if (w) {
+            this.canvas.width = w;
+        }
+
+        return this.canvas.width;
+    };
+
     board.height = function () { return this.canvas.height; };
 
     board.stage = new createjs.Stage(board.canvas);
     board.world = new box2d.World(new box2d.Vector(0, 10), true);
     board.scale = 30;
+
     board.addSprite = function (s) {
         this.stage.addChild(s.displayObject);
         this.pieces.push(s);
     };
+
     board.addBody = function (b) {
         if (!b.bodyDefinition) {
             throw "b has no bodyDefinition";
@@ -31,9 +42,11 @@ function createBoard(canvasId) {
         b.body.CreateFixture(b.fixtureDefinition);
         b.body.SetUserData(b);
     };
+
     board.addContactListener = function (l) {
         this.world.SetContactListener(l);
     };
+
     board.addPiece = function (p) {
         if (p.isPhysical) {
             this.addBody(p);
@@ -41,6 +54,7 @@ function createBoard(canvasId) {
 
         this.addSprite(p);
     };
+
     board.addPieces = function (n, creator, spacerFactory) {
         var spacer, i, that;
         that = this;
@@ -61,6 +75,7 @@ function createBoard(canvasId) {
 
         return this;
     };
+
     board.debug = function () {
         var debugDraw;
         this.debugging = true;
@@ -73,6 +88,24 @@ function createBoard(canvasId) {
         debugDraw.SetFlags(box2d.Debug.Shape | box2d.Debug.Joint);
         this.world.SetDebugDraw(debugDraw);
     };
+
+    board.size = function (boardSize) {
+        var factor;
+        switch (true) {
+            case /huge/i.test(boardSize):
+                factor = 3;
+                break;
+            case /medium/i.test(boardSize):
+                factor = 2;
+                break;
+            default:
+                factor = 1;
+        }
+
+        this.width(defaultWidth * factor);
+        return this;
+    }
+
     board.update = function () {
         this.world.Step(1 / 60, 10, 10);
         this.world.ClearForces();

@@ -62,6 +62,12 @@ var game = (function () {
     };
 
     return {
-        boardSize: function () { return this; }
+        boardSize: function (size) {
+            if (board) {
+                board.size(size || "small");
+            }
+
+            return this;
+        }
     };
 })();

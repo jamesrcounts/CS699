@@ -5,7 +5,9 @@ function createBackground(spec) {
     background.fill = '#d0e7f9';
     background.width = spec.width();
     background.height = spec.height();
-    background.update = function() {
+    background.update = function (w, h) {
+        this.width = w;
+        this.height = h;
         this.displayObject
             .graphics
             .clear()
